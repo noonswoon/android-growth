@@ -33,20 +33,25 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,12 +62,16 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mProfileImage;
     private TextView mNameTextView;
     private ShareButton mShareButton;
+    private String mImageUrl;
+    private String mParseId;
+    private ShareDialog mShareDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+        createDB();
 
         setContentView(R.layout.activity_main);
 
@@ -71,36 +80,46 @@ public class MainActivity extends AppCompatActivity {
         mNameTextView = (TextView) findViewById(R.id.view_text_name);
         mShareButton = (ShareButton) findViewById(R.id.button_share);
 
-        createDB();
-
-
-
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap image = takeScreenshot();
-                SharePhoto photo = new SharePhoto.Builder()
-                        .setBitmap(image)
-                        .build();
-                SharePhotoContent content = new SharePhotoContent.Builder()
-                        .addPhoto(photo)
-                        .build();
-                mShareButton.setShareContent(content);
-                mShareButton.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                Bitmap bitmap = takeScreenshot();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] image = stream.toByteArray();
+                final ParseFile mFile = new ParseFile("ShareImage.png", image);
+                mFile.saveInBackground(new SaveCallback() {
                     @Override
-                    public void onSuccess(Sharer.Result result) {
-                        showAds();
-                        Log.e("Login Result:", "Share Success");
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Log.e("Login Result:", "Share Cancel");
-                    }
-
-                    @Override
-                    public void onError(FacebookException e) {
-                        Log.e("Login Result:", "Share Error");
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.e("Upload result image:", "Success");
+                            mImageUrl = mFile.getUrl();
+                            ParseQuery<ParseObject> query = ParseQuery.getQuery("UserProfile");
+                            query.getInBackground(mParseId, new GetCallback<ParseObject>() {
+                                @Override
+                                public void done(ParseObject parseObject, ParseException e) {
+                                    if (e == null) {
+                                        Log.e("Get ParseObject", "Success");
+                                        parseObject.put("ImageFile", mFile);
+                                        parseObject.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if (e == null) {
+                                                    Log.e("Update:", "Success");
+                                                    shareLinkContent();
+                                                } else {
+                                                    Log.e("Update:", "Failed");
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Log.e("Get ParseObject", "Failed");
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.e("Upload result image:", "Failed");
+                        }
                     }
                 });
             }
@@ -138,9 +157,37 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("Login Result:", "Login Error");
                 }
             });
-
         }
     }
+
+    private void shareLinkContent() {
+        mShareDialog = new ShareDialog(MainActivity.this);
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentDescription("Test : setContentDescription")
+                .setContentTitle("Test : setContentTitle")
+                .setImageUrl(Uri.parse(mImageUrl))
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .build();
+        mShareDialog.show(content);
+        mShareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                showAds();
+                Log.e("Login Result:", "Share Success");
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("Login Result:", "Share Cancel");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Log.e("Login Result:", "Share Error");
+            }
+        });
+    }
+
 
     private void showAds() {
         final Dialog dialog = new Dialog(MainActivity.this);
@@ -170,17 +217,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendUserProfile() {
+        final ParseObject mUser = new ParseObject("UserProfile");
         JSONObject profile = userProfile.getUserProfile();
-        ParseObject user = new ParseObject("UserProfile");
         try {
-            user.put("FirstName", profile.getString("first_name"));
-            user.put("LastName", profile.getString("last_name"));
-            user.put("Email", profile.getString("email"));
-            user.put("BirthDate", profile.getString("birthday"));
+            mUser.put("FirstName", profile.getString("first_name"));
+            mUser.put("LastName", profile.getString("last_name"));
+            mUser.put("Email", profile.getString("email"));
+            mUser.put("BirthDate", profile.getString("birthday"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        user.saveEventually();
+        mUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.e("Send user profile:", "Success");
+                    mParseId = mUser.getObjectId();
+                } else {
+                    Log.e("Send user profile:", "Failed");
+                }
+            }
+        });
     }
 
     public Bitmap takeScreenshot() {
@@ -201,7 +258,6 @@ public class MainActivity extends AppCompatActivity {
                 category = String.valueOf((char) i);
             }
         }
-
         SharedPreferences shared = getSharedPreferences(MY_PREFS,
                 Context.MODE_PRIVATE);
         result.setText(shared.getString(category, shared.getString("null", "null")));
@@ -242,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                         userProfile.setUserProfile(object);
                         userProfile.setCategory(category);
                         getResult(mResultTextView);
@@ -254,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
         parameters.putString("fields", "id, first_name,last_name, picture.width(320).height(320), likes.limit(100), birthday, email");
         request.setParameters(parameters);
         request.executeAsync();
-
     }
 
 
