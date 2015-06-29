@@ -52,10 +52,14 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String MY_PREFS = "result_db";
+    private static final String LANG_ENG = "0";
+    private static final String LANG_THAI = "1";
     private UserProfile userProfile = new UserProfile();
     private CallbackManager callbackManager;
     private TextView mResultTextView;
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private String mImageUrl;
     private String mParseId;
     private ShareDialog mShareDialog;
+    private Boolean mLoggedIn = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     mNameTextView.setText(null);
                     mProfileImage.setImageBitmap(null);
                     mShareButton.setVisibility(View.INVISIBLE);
+                    mLoggedIn = false;
                 }
             }
         };
@@ -173,17 +179,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Sharer.Result result) {
                 showAds();
-                Log.e("Login Result:", "Share Success");
+                Log.e("Share Result:", "Share Success");
             }
 
             @Override
             public void onCancel() {
-                Log.e("Login Result:", "Share Cancel");
+                Log.e("Share Result:", "Share Cancel");
             }
 
             @Override
             public void onError(FacebookException e) {
-                Log.e("Login Result:", "Share Error");
+                Log.e("Share Result:", "Share Error");
             }
         });
     }
@@ -249,18 +255,44 @@ public class MainActivity extends AppCompatActivity {
     private void getResult(TextView result) {
         mShareButton = (ShareButton) findViewById(R.id.button_share);
         mShareButton.setVisibility(View.VISIBLE);
+        ArrayList<String> categories = new ArrayList<>();
         String category = "null";
         int n = 0;
+        for (String s : userProfile.getCategory()) {
+            categories.add(s.substring(0, 1));
+        }
         for (int i = 65; i <= 90; i++) {
-            int z = Collections.frequency(userProfile.getCategory(), Character.toString((char) i));
+            int z = Collections.frequency(categories, Character.toString((char) i));
             if (z > n) {
                 n = z;
                 category = String.valueOf((char) i);
             }
         }
+        if (category.equals("C")) {
+            n = 0;
+            int c = 0;
+            Set<String> hashsetList = new HashSet<String>(userProfile.getCategory());
+            for (String s : hashsetList) {
+                if (s.substring(0,1).equals("C")) {
+                    int i = Collections.frequency(userProfile.getCategory(), s);
+                    Log.e("Category:", String.format("%s Count: %d", s, i));
+                    if (i > n){
+                        n = i;
+                    }
+                    if (s.contains("Community")) {
+                        c = c + i;
+                        if(c > n) {
+                            category = String.format("%s%d", "C", (i + 4) / 5 * 5);
+                            Log.e("Test:", String.format("%s", category));
+                        }
+                        Log.e("Community Count:", String.format("%d",c));
+                    }
+                }
+            }
+        }
         SharedPreferences shared = getSharedPreferences(MY_PREFS,
                 Context.MODE_PRIVATE);
-        result.setText(shared.getString(category, shared.getString("null", "null")));
+        result.setText(shared.getString(category + "_" + LANG_ENG, shared.getString("null", "null")));
     }
 
     private void getUserProfile() {
@@ -279,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject likes = object.getJSONObject("likes");
                             JSONArray data = likes.getJSONArray("data");
                             for (int i = 0; !data.getJSONObject(i).getString("category").isEmpty(); i++) {
-                                category.add(data.getJSONObject(i).getString("category").substring(0, 1));
+                                category.add(data.getJSONObject(i).getString("category"));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -357,45 +389,123 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void createDB() {
-        // Get SharedPreferences
         SharedPreferences shared = getSharedPreferences(MY_PREFS,
                 Context.MODE_PRIVATE);
-        // Save SharedPreferences
         SharedPreferences.Editor editor = shared.edit();
         if (shared.getBoolean("runfirsttime", true)) {
-            editor.putString("A", "You've got beautiful eyes, cute smile and silky hair.");
-            editor.putString("B", "You've got a nice skin, very good looking and adorable.");
-            editor.putString("C", "You're so sexy that you make the others blush when they look at you.");
-            editor.putString("D", "You have glamorous lips and perfect body.");
-            editor.putString("E", "You've slim body and skinny legs. Also your mind is beautiful.");
-            editor.putString("F", "You're homely looking but your possitive attitude make people like you.");
-            editor.putString("G", "You're friendly, good-humored that make everyone wants to be with you.");
-            editor.putString("H", "You've got nice legs, curvy body and you're easy-going with everyone.");
-            editor.putString("I", "You're so stunning. You make others jaw drop when they look at you.");
-            editor.putString("J", "You're funny person. You have sense of humor. Everyone wants to be close with you.");
-            editor.putString("K", "You've got adorable dimples. Your smile melt the other hearts.");
-            editor.putString("L", "You're a little bit cheeky. your humor always make people laugh.");
-            editor.putString("M", "You're rich and generous. That's why people want to be with you.");
-            editor.putString("N", "You're never look aged. You skin is very nice and you have no wrinkles.");
-            editor.putString("O", "You look very elegant yet adorable. Everyone wants to be with you.");
-            editor.putString("P", "You've got blushing cheeks. Everyone can fall in love with you easily when they see you.");
-            editor.putString("R", "You're very attractive person and your curvy body make people like you.");
-            editor.putString("S", "You're polite, quiet and modest. When people are with you, they're happy.");
-            editor.putString("T", "You like adventurous activities and love to visit exciting places.");
-            editor.putString("U", "You're extroverted person. Easy-going with everyone and you're kind. That's why people like you.");
-            editor.putString("V", "You've nice eyebrows, pretty lips and elegant hair. Moreover you're funny.");
-            editor.putString("W", "You've good manner, friendly yet sometimes you're a little bit naughty and cute.");
-            editor.putString("null", "You're young and have beautiful mind. You're kind to everyone.");
+            saveArray(new String[]{"You've got beautiful eyes, cute smile and silky hair.",
+                            "คุณมีดวงตาที่สวยงาม มีรอยยิ้มที่น่ารัก และมีผมที่นุ่มสลวย"},
+                    "A", MainActivity.this);
+            saveArray(new String[]{"You've got a nice skin, very good looking and adorable.",
+                            "คุณมีผิวพรรณที่ดี เป็นคนที่ดูดีและน่ารัก"},
+                    "B", MainActivity.this);
+            saveArray(new String[]{"You're so sexy that you make the others blush when they look at you.",
+                            "คุณมีความเซ็กซี่มากจนกระทั่ง ทำให้คนอื่นหน้าแดง เมื่อพวกเขามองมายังคุณ"},
+                    "C", MainActivity.this);
+            saveArray(new String[]{"You have glamorous lips and perfect body",
+                            "คุณมีริมฝีปากที่สวย และรูปร่างอันเพอร์เฟ็ค"},
+                    "D", MainActivity.this);
+            saveArray(new String[]{"You've slim body and skinny legs. Also your mind is beautiful.",
+                            "คุณมีรูปร่างบางและขาเรียวสวย นอกจากนี้จิตใจคุณยังงดงามอีกด้วย"},
+                    "E", MainActivity.this);
+            saveArray(new String[]{"You're homely looking but your possitive attitude make people like you.",
+                            "หน้าตาของคุณก็งั้นๆแหละ แต่คุณเป็นคนคิดบวกเลยทำให้ผู้คนชอบคุณ"},
+                    "F", MainActivity.this);
+            saveArray(new String[]{"You're friendly, good-humored that make everyone wants to be with you.",
+                            "คุณเป็นคนที่เป็นกันเอง มีความขบขัน ทำให้ทุกๆคนอยากจะเข้ามาอยู่ใกล้ๆคุณ"},
+                    "G", MainActivity.this);
+            saveArray(new String[]{"You've got nice legs, curvy body and you're easy-going with everyone.",
+                            "คุณมีขาที่สวย รูปร่างดี และเข้ากับคนอื่นได้ทุกๆคน"},
+                    "H", MainActivity.this);
+            saveArray(new String[]{"You're so stunning. You make others jaw drop when they look at you.",
+                            "คุณสวยมาก! สวยจนกระทั่งทำให้คนอื่นอ้าปากค้างเมื่อพวกเขามองคุณ"},
+                    "I", MainActivity.this);
+            saveArray(new String[]{"You're funny person. You have sense of humor. Everyone wants to be close with you.",
+                            "คุณเป็นคนตลก มีความขำขัน จนทุกๆคนอยากจะอยู่ใกล้ๆกับคุณ"},
+                    "J", MainActivity.this);
+            saveArray(new String[]{"You've got adorable dimples. Your smile melt the other hearts.",
+                            "คุณมีลักยิ้มที่น่ารัก รอยยิ้มของคุณละลายใจของทุกๆคน"},
+                    "K", MainActivity.this);
+            saveArray(new String[]{"You're a little bit cheeky. your humor always make people laugh.",
+                            "คุณมีความทะเล้น มุกตลกของคุณทำให้คนอื่นขำได้เสมอ"},
+                    "L", MainActivity.this);
+            saveArray(new String[]{"You're rich and generous. That's why people want to be with you.",
+                            "คุณรวยและเป็นคนใจกว้าง นี่แหละคือสาเหตุที่ผู้คนอยากอยู่ใกล้คุณ"},
+                    "M", MainActivity.this);
+            saveArray(new String[]{"You're never look aged. You skin is very nice and you have no wrinkles.",
+                            "คุณดูไม่แก่ลงไปเลย ผิวพรรณของคุณนั้นดีเยี่ยม ไม่มีแม้กระทั่งรอยตีนกา"},
+                    "N", MainActivity.this);
+            saveArray(new String[]{"You look very elegant yet adorable. Everyone wants to be with you.",
+                            "คุณเป็นคนที่มีความสง่างาม แต่ยังมีความน่ารัก ทำให้ทุกๆคนอยากอยู่กับคุณ"},
+                    "O", MainActivity.this);
+            saveArray(new String[]{"You've got blushing cheeks. Everyone can fall in love with you easily when they see you.",
+                            "คุณมีแก้มที่แดงสวย ทุกๆคนสามารถตกหลุมรักคุณได้อย่างง่ายดายเมื่อเขาเห็นคุณ"},
+                    "P", MainActivity.this);
+            saveArray(new String[]{"You're very attractive person and your curvy body make people like you.",
+                            "คุณเป็นคนที่มีเสน่ห์ดึงดูดมาก รูปร่างอันงดงามของคุณ ทำให้ผู้คนชอบคุณ"},
+                    "R", MainActivity.this);
+            saveArray(new String[]{"You're polite, quiet and modest. When people are with you, they're happy.",
+                            "คุณเป็นคนสุภาพ เงียบ และเจียมเนื้อเจียมตัว เมื่อคนอื่นอยู่กับคุณ พวกเขารู้สึกมีความสุข"},
+                    "S", MainActivity.this);
+            saveArray(new String[]{"You like adventurous activities and love to visit exciting places.",
+                            "คุณเป็นคนที่ชอบกิจกรรมผจญภัย และชอบที่จะไปเยี่ยมชมสถานที่น่าตื่นตาตื่นใจ"},
+                    "T", MainActivity.this);
+            saveArray(new String[]{"You're extroverted person. Easy-going with everyone and you're kind. That's why people like you.",
+                            "คุณเป็นคนเข้าสังคมเก่ง เข้ากับคนอื่นได้ทุกคน และคุณยังใจดีอีกต่างหาก นั่นคือเหตุผลที่ทำไมผู้คนถึงชอบคุณ"},
+                    "U", MainActivity.this);
+            saveArray(new String[]{"You've nice eyebrows, pretty lips and elegant hair. Moreover you're funny.",
+                            "คุณมีคิ้วที่ดูดี มีริมฝีปากที่รูปร่างสวย และมีผมที่นุ่มสลวย นอกจากนี้คุณยังเป็นคนที่มีความตลกอีกด้วย"},
+                    "V", MainActivity.this);
+            saveArray(new String[]{"You've good manner, friendly yet sometimes you're a little bit naughty and cute.",
+                            "คุณเป็นคนที่มีมารยาทดี มีความเป็นกันเอง บางครั้งคุณก็ซุกซนนิดหน่อย และคุณก็น่ารักด้วย"},
+                    "W", MainActivity.this);
+            saveArray(new String[]{"You're young and have beautiful mind. You're kind to everyone.",
+                            "คุณดูเด็ก และมีจิตใจที่ดี คุณใจดีกับทุกๆคน"},
+                    "null", MainActivity.this);
+            saveArray(new String[]{"Your dressing style is so fashionable. You also have nice make up.",
+                            "คุณเป็นคนที่มีสไตล์การแต่งตัวทันสมัย และการแต่งหน้าของคุณก็ดูดีอีกด้วย"},
+                    "C5", MainActivity.this);
+            saveArray(new String[]{"You’re a bit chubby, your belly is so soft. That’s why people like you.",
+                            "คุณออกจะจ้ำม่ำเล็กน้อย มีพุงนุ่มนิ่ม เป็นเหตุให้ผู้คนชอบคุณ"},
+                    "C10", MainActivity.this);
+            saveArray(new String[]{"You’re so fabulous and good to everyone. You’re so nice that many people like you.",
+                            "คุณเป็นคนที่ดีเหลือเกิน ดีกับทุกๆคน จนทำให้คนหลายๆคนชอบในตัวคุณ"},
+                    "C15", MainActivity.this);
+            saveArray(new String[]{"Your smile can melt people’ heart and your body has very good shape.",
+                            "รอยยิ้มของคุณละลายใจของผู้คน และคุณยังมีรูปร่างที่ดีอีกด้วย"},
+                    "C20", MainActivity.this);
+            saveArray(new String[]{"You’re not that good-looking person, not so beautiful. But your sincerity is the reason why people like you.",
+                            "คุณไม่ได้ดูดีอะไรขนาดนั้น ไม่ได้สวยมาก แต่ความจริงใจของคุณเป็นสาเหตุให้ผู้คนชอบคุณ"},
+                    "C25", MainActivity.this);
             editor.putBoolean("runfirsttime", false);
             editor.apply();
         }
+    }
+
+    public boolean saveArray(String[] array, String arrayName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(MY_PREFS, 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(arrayName + "_size", array.length);
+        for (int i = 0; i < array.length; i++)
+            editor.putString(arrayName + "_" + i, array[i]);
+        return editor.commit();
+    }
+
+    public String[] loadArray(String arrayName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(MY_PREFS, 0);
+        int size = prefs.getInt(arrayName + "_size", 0);
+        String array[] = new String[size];
+        for (int i = 0; i < size; i++)
+            array[i] = prefs.getString(arrayName + "_" + i, null);
+        return array;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         AppEventsLogger.activateApp(this);
-        if (AccessToken.getCurrentAccessToken() != null) {
+        if (AccessToken.getCurrentAccessToken() != null && !mLoggedIn) {
+            mLoggedIn = true;
             getUserProfile();
         }
     }
