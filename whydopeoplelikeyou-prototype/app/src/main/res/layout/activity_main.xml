@@ -11,66 +11,181 @@
                 android:id="@+id/main">
 
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffffff"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/image_profile"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            tools:src="@drawable/profile_default"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="50dp"/>
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/view_text_name"
-            tools:text="People like\nYour Name because"
-            android:layout_alignLeft="@+id/image_profile"
-            android:layout_alignRight="@+id/image_profile"
-            android:gravity="center|center_vertical|center_horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/image_profile"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:layout_weight="1"
+            android:id="@+id/layout_result">
 
-        <TextView
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/image_profile"
+                tools:src="@drawable/profile_default"
+                android:scaleType="fitCenter"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="50dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/view_text_name"
+                tools:text="Your Name"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/view_text_header_en"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="#ff367831"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/view_text_result_en"
+                tools:text="Homely looking, Fine hairstyle, Positive attitude."
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_below="@+id/view_text_because_en"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentTop="false"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textSize="16sp"
+                android:textColor="#ff221ae3"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/image_result"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:maxWidth="150dp"
+                android:maxHeight="150dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_border"
+                tools:src="@drawable/result_3"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 Reasons why people like"
+                android:id="@+id/view_text_header_en"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/image_profile"
+                android:textSize="24sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="3 เหตุผลที่ทำไมคนถึงชอบคุณ"
+                android:id="@+id/view_text_header_th"
+                android:layout_below="@+id/view_text_header_en"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="because you are..."
+                android:id="@+id/view_text_because_en"
+                android:layout_below="@+id/view_text_name"
+                android:layout_centerHorizontal="true"
+                android:textSize="24sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="ก็เพราะว่าคุณ..."
+                android:id="@+id/view_text_because_th"
+                android:layout_below="@+id/view_text_because_en"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/view_text_result_th"
+                android:layout_below="@+id/view_text_result_en"
+                android:layout_centerHorizontal="true"
+                android:textSize="16sp"
+                tools:text="แต่งตัวดี ทันสมัย หน้าตาดี รวย"
+                android:textColor="#ff221ae3"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/image_result"
+                android:layout_toLeftOf="@+id/image_result"
+                android:layout_toStartOf="@+id/image_result"
+                android:layout_alignTop="@+id/image_result">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Is that you ? ->"
+                    android:id="@+id/view_text_isyou_en"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="15dp"
+                    android:gravity="right"
+                    android:textSize="24sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="แล้วนี่ใช่คุณรึเปล่า"
+                    android:id="@+id/view_text_isyou_th"
+                    android:layout_below="@+id/view_text_isyou_en"
+                    android:layout_alignRight="@+id/view_text_isyou_en"
+                    android:layout_alignEnd="@+id/view_text_isyou_en"
+                    android:gravity="center"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:layout_alignTop="@+id/image_profile"
+                android:layout_toRightOf="@+id/image_profile"
+                android:layout_toEndOf="@+id/view_text_because_th"
+                android:layout_alignBottom="@+id/image_profile"
+                android:src="@drawable/question_mark"/>
+
+        </RelativeLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/view_text_result"
-            tools:text="You're extroverted person. Easy-going with everyone and you’re kind. That’s why people like you."
-            android:gravity="center|center_vertical|center_horizontal"
-            android:layout_below="@+id/view_text_name"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentTop="false"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:textSize="16sp"/>
+            android:layout_height="match_parent"
+            android:layout_weight="13"
+            android:background="#ffffffff">
 
-        <view
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            class="com.facebook.share.widget.ShareButton"
-            android:id="@+id/button_share"
-            android:visibility="invisible"
-            tools:visibility="visible"
-            android:background="#ffc4e0ff"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:textSize="20sp"/>
-
-    </RelativeLayout>
+            <view
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="com.facebook.share.widget.ShareButton"
+                android:id="@+id/button_share"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:background="#ff9abcff"
+                android:textSize="20sp"/>
+        </FrameLayout>
+    </LinearLayout>
 
 </RelativeLayout>
