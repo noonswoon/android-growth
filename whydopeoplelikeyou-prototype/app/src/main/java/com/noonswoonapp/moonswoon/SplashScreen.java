@@ -12,7 +12,7 @@ public class SplashScreen extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private long mDelayTime;
-    private long mTime = 3000;
+    private long mTime = 2000;
 
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -22,12 +22,11 @@ public class SplashScreen extends AppCompatActivity {
 
         runnable = new Runnable() {
             public void run() {
-                Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+                Intent intent = new Intent(SplashScreen.this, Questionnaire.class);
                 startActivity(intent);
                 finish();
             }
         };
-
     }
 
     public void onResume() {

@@ -76,14 +76,17 @@ public class MainActivity extends AppCompatActivity {
     private String mImageUrl;
     private String mParseId;
     private Boolean mLoggedIn = false;
+    private int point;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        loadOldDB();
+//        loadOldDB();
         loadDB();
+        Intent intent = getIntent();
+        point = intent.getIntExtra("point", 0);
 
         setContentView(R.layout.activity_main);
 
@@ -91,6 +94,13 @@ public class MainActivity extends AppCompatActivity {
         mProfileImage = (ImageView) findViewById(R.id.image_profile);
         mNameTextView = (TextView) findViewById(R.id.view_text_name);
         mShareButton = (ShareButton) findViewById(R.id.button_share);
+        mProfileImage = (ImageView) findViewById(R.id.image_profile);
+        mNameTextView = (TextView) findViewById(R.id.view_text_name);
+        mResultImage = (ImageView) findViewById(R.id.image_result);
+        mShareButton = (ShareButton) findViewById(R.id.button_share);
+        mResultTextViewEN = (TextView) findViewById(R.id.view_text_result_en);
+        mResultTextViewTH = (TextView) findViewById(R.id.view_text_result_th);
+
 
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,16 +139,20 @@ public class MainActivity extends AppCompatActivity {
                                                     shareLinkContent(mProgressDialog);
                                                 } else {
                                                     Log.e("Update:", "Failed");
+                                                    mProgressDialog.dismiss();
                                                 }
                                             }
                                         });
                                     } else {
                                         Log.e("Get ParseObject", "Failed");
+                                        mProgressDialog.dismiss();
                                     }
                                 }
                             });
                         } else {
                             Log.e("Upload result image:", "Failed");
+                            Log.e("ERROR:", String.valueOf(e));
+                            mProgressDialog.dismiss();
                         }
                     }
                 });
@@ -277,22 +291,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getResult() {
-        mResultImage = (ImageView) findViewById(R.id.image_result);
-        mShareButton = (ShareButton) findViewById(R.id.button_share);
-        mShareButton.setVisibility(View.VISIBLE);
-        mResultTextViewEN = (TextView) findViewById(R.id.view_text_result_en);
-        mResultTextViewTH = (TextView) findViewById(R.id.view_text_result_th);
         ArrayList<String> categories = new ArrayList<>();
         String category = "null";
         int n = 0;
         for (String s : userProfile.getCategory()) {
             categories.add(s.substring(0, 1));
         }
-        for (int i = 65; i <= 90; i++) {
+        for (int i = 65; i <= 87; i++) {
             int z = Collections.frequency(categories, Character.toString((char) i));
             if (z > n) {
                 n = z;
-                category = String.valueOf((char) i);
+                int total = i + point;
+                if (total < 65) {
+                    total = 87 - (64 - total);
+                } else if (total > 87) {
+                    total = (total - 88) + 65;
+                } else if (total == 81){
+                    if (point >= 0) {
+                        total++;
+                    } else {
+                        total--;
+                    }
+                }
+                category = String.valueOf((char)total);
             }
         }
         if (category.equals("C")) {
@@ -317,20 +338,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
         SharedPreferences shared = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         mResultTextViewEN.setText(shared.getString(category + "_" + LANG_ENG, shared.getString("null_" + LANG_ENG, "null_" + LANG_ENG)));
         mResultTextViewTH.setText(shared.getString(category + "_" + LANG_THAI, shared.getString("null_" + LANG_THAI, "null_" + LANG_THAI)));
+        Log.e("Thai:", shared.getString(category + "_" + LANG_THAI, shared.getString("null_" + LANG_THAI, "null_" + LANG_THAI)));
         String mDrawableName = shared.getString(category + "_" + IMAGE, shared.getString("null_" + IMAGE, "null_" + IMAGE));
         int resID = getResources().getIdentifier(mDrawableName, "drawable", getPackageName());
-        Log.e("Thai:", shared.getString(category + "_" + LANG_THAI, shared.getString("null_" + LANG_THAI, "null_" + LANG_THAI)));
-        String test = shared.getString(category + "_" + LANG_THAI, shared.getString("null_" + LANG_THAI, "null_" + LANG_THAI));
-        Log.e("Thai:", test);
         mResultImage.setImageResource(resID);
+        mShareButton.setVisibility(View.VISIBLE);
     }
 
     private void getUserProfile() {
-        mProfileImage = (ImageView) findViewById(R.id.image_profile);
-        mNameTextView = (TextView) findViewById(R.id.view_text_name);
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {

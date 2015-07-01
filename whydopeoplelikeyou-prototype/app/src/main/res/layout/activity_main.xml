@@ -20,7 +20,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
+            android:background="#fffeffbb"
             android:layout_weight="1"
             android:id="@+id/layout_result">
 
@@ -132,7 +132,8 @@
                 android:layout_alignBottom="@+id/image_result"
                 android:layout_toLeftOf="@+id/image_result"
                 android:layout_toStartOf="@+id/image_result"
-                android:layout_alignTop="@+id/image_result">
+                android:layout_alignTop="@+id/image_result"
+                android:id="@+id/layout_isthatyou">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -144,7 +145,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginRight="15dp"
                     android:gravity="right"
-                    android:textSize="24sp"/>
+                    android:textSize="24sp"
+                    />
 
                 <TextView
                     android:layout_width="match_parent"
