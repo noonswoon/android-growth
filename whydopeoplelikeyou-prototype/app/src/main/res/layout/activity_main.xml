@@ -7,7 +7,7 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 tools:context=".MainActivity"
-                android:background="#ff027a45"
+                android:background="#ffb90235"
                 android:id="@+id/main">
 
 
@@ -32,9 +32,10 @@
                 android:scaleType="fitCenter"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentLeft="false"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="50dp"/>
+                android:layout_alignWithParentIfMissing="false"
+                android:paddingRight="100dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -44,8 +45,7 @@
                 android:gravity="center|center_vertical|center_horizontal"
                 android:layout_marginTop="20dp"
                 android:layout_below="@+id/view_text_header_en"
-                android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="25sp"
                 android:textColor="#ff367831"/>
 
             <TextView
@@ -62,7 +62,8 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:textSize="16sp"
-                android:textColor="#ff221ae3"/>
+                android:textColor="#ff221ae3"
+                android:visibility="invisible"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -75,8 +76,8 @@
                 android:maxHeight="150dp"
                 android:scaleType="centerInside"
                 android:adjustViewBounds="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/bg_border"
                 tools:src="@drawable/result_3"/>
 
@@ -87,7 +88,8 @@
                 android:id="@+id/view_text_header_en"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/image_profile"
-                android:textSize="24sp"/>
+                android:textSize="24sp"
+                android:visibility="invisible"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -95,8 +97,10 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="3 เหตุผลที่ทำไมคนถึงชอบคุณ"
                 android:id="@+id/view_text_header_th"
-                android:layout_below="@+id/view_text_header_en"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@+id/image_profile"
+                android:layout_centerHorizontal="true"
+                android:textSize="30sp"
+                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -105,7 +109,8 @@
                 android:id="@+id/view_text_because_en"
                 android:layout_below="@+id/view_text_name"
                 android:layout_centerHorizontal="true"
-                android:textSize="24sp"/>
+                android:textSize="24sp"
+                android:visibility="invisible"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -113,18 +118,22 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="ก็เพราะว่าคุณ..."
                 android:id="@+id/view_text_because_th"
-                android:layout_below="@+id/view_text_because_en"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@+id/view_text_name"
+                android:layout_centerHorizontal="true"
+                android:textSize="30sp"
+                android:layout_marginTop="10sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/view_text_result_th"
-                android:layout_below="@+id/view_text_result_en"
+                android:layout_below="@+id/view_text_because_th"
                 android:layout_centerHorizontal="true"
-                android:textSize="16sp"
+                android:textSize="30sp"
                 tools:text="แต่งตัวดี ทันสมัย หน้าตาดี รวย"
-                android:textColor="#ff221ae3"/>
+                android:textColor="#ff221ae3"
+                android:layout_marginTop="10dp"
+                android:gravity="center"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -146,29 +155,31 @@
                     android:layout_marginRight="15dp"
                     android:gravity="right"
                     android:textSize="24sp"
-                    />
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="แล้วนี่ใช่คุณรึเปล่า"
+                    android:text="แล้วนี่ใช่คุณรึเปล่า ->"
                     android:id="@+id/view_text_isyou_th"
                     android:layout_below="@+id/view_text_isyou_en"
                     android:layout_alignRight="@+id/view_text_isyou_en"
                     android:layout_alignEnd="@+id/view_text_isyou_en"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:textSize="20sp"/>
             </RelativeLayout>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageView"
-                android:layout_alignTop="@+id/image_profile"
-                android:layout_toRightOf="@+id/image_profile"
                 android:layout_toEndOf="@+id/view_text_because_th"
-                android:layout_alignBottom="@+id/image_profile"
-                android:src="@drawable/question_mark"/>
+                android:src="@drawable/question_mark"
+                android:layout_alignLeft="@+id/image_profile"
+                android:layout_marginLeft="70dp"
+                android:layout_alignTop="@+id/image_profile"
+                android:layout_alignBottom="@+id/image_profile"/>
 
         </RelativeLayout>
 

@@ -12,7 +12,7 @@ public class SplashScreen extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private long mDelayTime;
-    private long mTime = 2000;
+    private long mTime = 1000;
 
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);

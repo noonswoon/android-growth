@@ -3,11 +3,12 @@ package com.noonswoonapp.moonswoon;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 
@@ -17,9 +18,9 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private static final boolean UPDATE_DB = false;
     private static final int TOTAL_QUESTION = 5;
     private TextView mQuestion;
-    private Button mChoice1;
-    private Button mChoice2;
-    private Button mChoice3;
+    private RadioButton mChoice1;
+    private RadioButton mChoice2;
+    private RadioButton mChoice3;
     private int question = 1;
     private int point = 0;
 
@@ -28,10 +29,10 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionaire);
 
-        mQuestion = (TextView) findViewById(R.id.view_text_question);
-        mChoice1 = (Button) findViewById(R.id.button_choice1);
-        mChoice2 = (Button) findViewById(R.id.button_choice2);
-        mChoice3 = (Button) findViewById(R.id.button_choice3);
+        changeFontSuperMarket(mQuestion = (TextView) findViewById(R.id.view_text_question));
+        changeFontSuperMarket(mChoice1 = (RadioButton) findViewById(R.id.button_choice1));
+        changeFontSuperMarket(mChoice2 = (RadioButton) findViewById(R.id.button_choice2));
+        changeFontSuperMarket(mChoice3 = (RadioButton) findViewById(R.id.button_choice3));
 
         loadDB();
         loadQuestion();
@@ -55,6 +56,11 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private void addPoint(String choice) {
         SharedPreferences shared = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         point = point + Integer.parseInt(shared.getString("QP" + String.valueOf(question) + "_" + choice, null));
+    }
+
+    private void changeFontSuperMarket(TextView textView) {
+        Typeface font = Typeface.createFromAsset(getAssets(), "font/supermarket.ttf");
+        textView.setTypeface(font);
     }
 
     private void loadDB() {
@@ -93,16 +99,19 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         if (question <= TOTAL_QUESTION) {
             switch (v.getId()) {
                 case R.id.button_choice1:
+                    mChoice1.setChecked(false);
                     addPoint("0");
                     question++;
                     loadQuestion();
                     break;
                 case R.id.button_choice2:
+                    mChoice2.setChecked(false);
                     addPoint("1");
                     question++;
                     loadQuestion();
                     break;
                 case R.id.button_choice3:
+                    mChoice3.setChecked(false);
                     addPoint("2");
                     question++;
                     loadQuestion();

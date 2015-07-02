@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -72,11 +73,18 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mProfileImage;
     private ImageView mResultImage;
     private TextView mNameTextView;
+    private TextView mHeaderEn;
+    private TextView mHeaderTh;
+    private TextView mBecauseEn;
+    private TextView mBecauseTh;
+    private TextView mIsThatYouEn;
+    private TextView mIsThatYouTh;
     private ShareButton mShareButton;
     private String mImageUrl;
     private String mParseId;
     private Boolean mLoggedIn = false;
     private int point;
+    private Button button;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,17 +98,20 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        mResultTextViewEN = (TextView) findViewById(R.id.view_text_result_en);
-        mProfileImage = (ImageView) findViewById(R.id.image_profile);
-        mNameTextView = (TextView) findViewById(R.id.view_text_name);
+        changeFontSuperMarket(mResultTextViewEN = (TextView) findViewById(R.id.view_text_result_en));
+        changeFontSuperMarket(mResultTextViewTH = (TextView) findViewById(R.id.view_text_result_th));
         mShareButton = (ShareButton) findViewById(R.id.button_share);
         mProfileImage = (ImageView) findViewById(R.id.image_profile);
-        mNameTextView = (TextView) findViewById(R.id.view_text_name);
+        changeFontSuperMarket(mNameTextView = (TextView) findViewById(R.id.view_text_name));
         mResultImage = (ImageView) findViewById(R.id.image_result);
-        mShareButton = (ShareButton) findViewById(R.id.button_share);
-        mResultTextViewEN = (TextView) findViewById(R.id.view_text_result_en);
-        mResultTextViewTH = (TextView) findViewById(R.id.view_text_result_th);
-
+        changeFontSuperMarket(mResultTextViewEN = (TextView) findViewById(R.id.view_text_result_en));
+        changeFontSuperMarket(mResultTextViewTH = (TextView) findViewById(R.id.view_text_result_th));
+        changeFontSuperMarket(mHeaderEn = (TextView) findViewById(R.id.view_text_header_en));
+        changeFontSuperMarket(mHeaderTh = (TextView) findViewById(R.id.view_text_header_th));
+        changeFontSuperMarket(mBecauseEn = (TextView) findViewById(R.id.view_text_because_en));
+        changeFontSuperMarket(mBecauseTh = (TextView) findViewById(R.id.view_text_because_th));
+        changeFontSuperMarket(mIsThatYouEn = (TextView) findViewById(R.id.view_text_isyou_en));
+        changeFontSuperMarket(mIsThatYouTh = (TextView) findViewById(R.id.view_text_isyou_th));
 
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 mProgressDialog.setMessage("Sharing Image...");
                 mProgressDialog.setIndeterminate(true);
+                mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.show();
                 mFile.saveInBackground(new SaveCallback() {
                     @Override
@@ -196,6 +208,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void changeFontSuperMarket(TextView textView) {
+        Typeface font = Typeface.createFromAsset(getAssets(), "font/supermarket.ttf");
+        textView.setTypeface(font);
+    }
+
     private void shareLinkContent(final ProgressDialog progressDialog) {
         ShareDialog shareDialog = new ShareDialog(MainActivity.this);
         ShareLinkContent content = new ShareLinkContent.Builder()
@@ -205,21 +222,25 @@ public class MainActivity extends AppCompatActivity {
                 .setContentUrl(Uri.parse("https://noonswoonapp.com/"))
                 .build();
         shareDialog.show(content);
-        progressDialog.dismiss();
         shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
+                progressDialog.dismiss();
                 showAds();
                 Log.e("Share Result:", "Share Success");
             }
 
             @Override
             public void onCancel() {
+                progressDialog.dismiss();
+                showAds();
                 Log.e("Share Result:", "Share Cancel");
             }
 
             @Override
             public void onError(FacebookException e) {
+                progressDialog.dismiss();
+                showAds();
                 Log.e("Share Result:", "Share Error");
             }
         });
@@ -238,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                Intent intent = new Intent(MainActivity.this, Retry.class);
+                startActivity(intent);
             }
         });
 
@@ -250,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
