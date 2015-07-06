@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private RadioButton mChoice1;
     private RadioButton mChoice2;
     private RadioButton mChoice3;
+    private LinearLayout mQuestionnaireLayout;
     private int question = 1;
     private int point = 0;
 
@@ -29,6 +31,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionaire);
 
+        mQuestionnaireLayout = (LinearLayout) findViewById(R.id.layout_questionnaire);
         changeFontSuperMarket(mQuestion = (TextView) findViewById(R.id.view_text_question));
         changeFontSuperMarket(mChoice1 = (RadioButton) findViewById(R.id.button_choice1));
         changeFontSuperMarket(mChoice2 = (RadioButton) findViewById(R.id.button_choice2));
@@ -126,6 +129,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private void loadActivity() {
         Intent intent = new Intent(Questionnaire.this, MainActivity.class);
         intent.putExtra("point", point);
+        mQuestionnaireLayout.setVisibility(View.INVISIBLE);
         startActivity(intent);
         finish();
     }

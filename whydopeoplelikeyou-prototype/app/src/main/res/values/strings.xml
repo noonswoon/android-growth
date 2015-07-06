@@ -7,4 +7,5 @@
     <string name="title_activity_splash_screen">Why do people like you ?</string>
     <string name="title_activity_questionaire">Questionaire</string>
     <string name="title_activity_retry">Retry</string>
+    <string name="title_activity_login_screen">LoginScreen</string>
 </resources>

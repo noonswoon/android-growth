@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="button_retry_color_pressed">#fffcff99</drawable>
+    <drawable name="button_retry_color">#ffdee182</drawable>
+    <drawable name="button_share_color_pressed">#ff9abcff</drawable>
+    <drawable name="button_share_color">#ff83a3e1</drawable>
+    <drawable name="button_start_color_pressed">#fffeffbb</drawable>
+    <drawable name="button_start_color">#ffe0e1a7</drawable>
+</resources>

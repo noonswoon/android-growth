@@ -44,11 +44,8 @@
             android:label="@string/title_activity_questionaire" >
         </activity>
         <activity
-            android:name=".Retry"
-            android:label="@string/title_activity_retry">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+            android:name=".LoginScreen"
+            android:label="@string/title_activity_login_screen" >
         </activity>
     </application>
 
