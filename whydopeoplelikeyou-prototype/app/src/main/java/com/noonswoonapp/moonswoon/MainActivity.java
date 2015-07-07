@@ -26,18 +26,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
@@ -56,7 +53,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,8 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String LANG_ENG = "0";
     private static final String LANG_THAI = "1";
     private static final String IMAGE = "2";
+    private static final String ALIAS = "3";
     private static final boolean UPDATE_DB = true;
-    private UserProfile userProfile = new UserProfile();
+    private UserProfile mUserProfile;
     private CallbackManager callbackManager;
     private TextView mResultTextViewTH;
     private ImageView mProfileImage;
@@ -75,12 +72,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mNameTextView;
     private ShareButton mShareButton;
     private String mImageUrl;
-    private String mParseId;
-    private Boolean mLoggedIn = false;
     private int point;
     private Button mRetry;
     private LinearLayout mResultLayout;
-    private int height;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,27 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        mResultLayout = (LinearLayout) findViewById(R.id.layout_result);
-        mResultLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressLint("NewApi")
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onGlobalLayout() {
-                height = mResultLayout.getHeight() / 2;
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mResultLayout.getLayoutParams();
-                params.width = (int) (height * 1.911);
-                mResultLayout.setLayoutParams(params);
+        changeLayoutSize();
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
-                    mResultLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                else
-                    mResultLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            }
-        });
-
-
-
-
+        mUserProfile = (UserProfile)getApplication();
         mShareButton = (ShareButton) findViewById(R.id.button_share);
         mProfileImage = (ImageView) findViewById(R.id.image_profile);
         changeFontSuperMarket(mNameTextView = (TextView) findViewById(R.id.view_text_name));
@@ -125,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
         changeFontSuperMarket((Button) findViewById(R.id.button_share));
 
         createProgressDialog("Generating Result...");
+        setUserProfile();
+        getResult();
 
         mRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("Upload result image:", "Success");
                             mImageUrl = mFile.getUrl();
                             ParseQuery<ParseObject> query = ParseQuery.getQuery("UserProfile");
-                            query.getInBackground(mParseId, new GetCallback<ParseObject>() {
+                            query.getInBackground(mUserProfile.getParseId(), new GetCallback<ParseObject>() {
                                 @Override
                                 public void done(ParseObject parseObject, ParseException e) {
                                     if (e == null) {
@@ -166,8 +144,7 @@ public class MainActivity extends AppCompatActivity {
                                             public void done(ParseException e) {
                                                 if (e == null) {
                                                     Log.e("Update:", "Success");
-
-                                                    shareLinkContent(mProgressDialog);
+                                                    shareLinkContent();
                                                 } else {
                                                     Log.e("Update:", "Failed");
                                                     mProgressDialog.dismiss();
@@ -183,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Log.e("Upload result image:", "Failed");
                             Log.e("ERROR:", String.valueOf(e));
+                            Toast.makeText(MainActivity.this,"Connection error. Please try again.",Toast.LENGTH_LONG).show();
                             mProgressDialog.dismiss();
                         }
                     }
@@ -190,40 +168,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+    }
+
+    private void changeLayoutSize() {
+        mResultLayout = (LinearLayout) findViewById(R.id.layout_result);
+        mResultLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressLint("NewApi")
+            @SuppressWarnings("deprecation")
             @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
-                                                       AccessToken currentAccessToken) {
-                if (currentAccessToken == null) {
-                    mNameTextView.setText(null);
-                    mProfileImage.setImageBitmap(null);
-                    mShareButton.setVisibility(View.INVISIBLE);
-                    mLoggedIn = false;
-                }
+            public void onGlobalLayout() {
+                double height = mResultLayout.getHeight() / 2;
+                mResultLayout.getLayoutParams().width = (int) (height * (1.911 / 2));
+                mResultLayout.requestLayout();
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
+                    mResultLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                else
+                    mResultLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
             }
-        };
-
-        if (AccessToken.getCurrentAccessToken() == null) {
-            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile, email, user_likes, user_photos, user_birthday, email"));
-            LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    getUserProfile();
-                    mLoggedIn = true;
-                    accessTokenTracker.startTracking();
-                    Log.e("Login Result:", "Login Success");
-                }
-                @Override
-                public void onCancel() {
-                    Log.e("Login Result:", "Login Cancel");
-                }
-
-                @Override
-                public void onError(FacebookException e) {
-                    Log.e("Login Result:", "Login Error");
-                }
-            });
-        }
+        });
     }
 
     public Bitmap combineImages(Bitmap c, Bitmap s) {
@@ -263,33 +226,33 @@ public class MainActivity extends AppCompatActivity {
         textView.setTypeface(font);
     }
 
-    private void shareLinkContent(final ProgressDialog progressDialog) {
+    private void shareLinkContent() {
         ShareDialog shareDialog = new ShareDialog(MainActivity.this);
         ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentDescription("Find out and share your fabulousness with your friends!")
-                .setContentTitle("Why do people like you?")
+                .setContentDescription("คลิกที่นี่ เพื่อลองค้นหาเหตุผลที่ทำไมคนถึงชอบคุณดูสิ")
+                .setContentTitle("เหตุผลที่ทำไมคนถึงชอบคุณ")
                 .setImageUrl(Uri.parse(mImageUrl))
-                .setContentUrl(Uri.parse("https://noonswoonapp.com/"))
+                .setContentUrl(Uri.parse("https://goo.gl/pszrQA"))
                 .build();
         shareDialog.show(content);
         shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                progressDialog.dismiss();
+                mProgressDialog.dismiss();
                 showAds();
                 Log.e("Share Result:", "Share Success");
             }
 
             @Override
             public void onCancel() {
-                progressDialog.dismiss();
+                mProgressDialog.dismiss();
                 showAds();
                 Log.e("Share Result:", "Share Cancel");
             }
 
             @Override
             public void onError(FacebookException e) {
-                progressDialog.dismiss();
+                mProgressDialog.dismiss();
                 showAds();
                 Log.e("Share Result:", "Share Error");
             }
@@ -325,31 +288,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void sendUserProfile() {
-        final ParseObject mUser = new ParseObject("UserProfile");
-        JSONObject profile = userProfile.getUserProfile();
-        try {
-            mUser.put("FirstName", profile.getString("first_name"));
-            mUser.put("LastName", profile.getString("last_name"));
-            mUser.put("Email", profile.getString("email"));
-            mUser.put("BirthDate", profile.getString("birthday"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mUser.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.e("Send user profile:", "Success");
-                    mParseId = mUser.getObjectId();
-                    mProgressDialog.dismiss();
-                } else {
-                    Log.e("Send user profile:", "Failed");
-                    mProgressDialog.dismiss();
-                }
-            }
-        });
-    }
 
     public Bitmap takeLayoutScreenshot(RelativeLayout view) {
         view.setDrawingCacheEnabled(true);
@@ -357,17 +295,11 @@ public class MainActivity extends AppCompatActivity {
         return view.getDrawingCache();
     }
 
-    public Bitmap takeScreenshot() {
-        View rootView = findViewById(android.R.id.content).getRootView();
-        rootView.setDrawingCacheEnabled(true);
-        return rootView.getDrawingCache();
-    }
-
     private void getResult() {
         ArrayList<String> categories = new ArrayList<>();
         String category = "null";
         int n = 0;
-        for (String s : userProfile.getCategory()) {
+        for (String s : mUserProfile.getCategory()) {
             categories.add(s.substring(0, 1));
         }
         for (int i = 65; i <= 87; i++) {
@@ -391,13 +323,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         SharedPreferences shared = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        mResultTextViewTH.setText(shared.getString(category + "_" + LANG_THAI, shared.getString("null_" + LANG_THAI, "null_" + LANG_THAI)));
-        Log.e("Thai:", shared.getString(category + "_" + LANG_THAI, shared.getString("null_" + LANG_THAI, "null_" + LANG_THAI)));
-        String mDrawableName = shared.getString(category + "_" + IMAGE, shared.getString("null_" + IMAGE, "null_" + IMAGE));
+
+        String mDrawableName = shared.getString(category + "_" + IMAGE, "null_" + IMAGE);
         int resID = getResources().getIdentifier(mDrawableName, "drawable", getPackageName());
+
+        Log.e("Result :", shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
+
+        mResultTextViewTH.setText(shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
         mResultImage.setImageResource(resID);
+        mNameTextView.setText(mNameTextView.getText() + "\nสมญานาม : " + shared.getString(category + "_" + ALIAS, "null_" + ALIAS));
+
+        mProgressDialog.dismiss();
         mShareButton.setVisibility(View.VISIBLE);
         mRetry.setVisibility(View.VISIBLE);
+    }
+
+    private void setUserProfile(){
+            mNameTextView.setText(mUserProfile.getUserName());
+            Picasso.with(MainActivity.this).load(mUserProfile.getProfileImage()).resize(230,230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
     }
 
     private void getUserProfile() {
@@ -428,19 +371,17 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject data = picture.getJSONObject("data");
                             Log.e("JSON: ", data.getString("url"));
                             Log.e("JSON: ", "https://graph.facebook.com/" + object.getString("id") + "/picture?type=large");
-                            Picasso.with(MainActivity.this).load(data.getString("url")).transform(new RoundedTransformation(150, 0)).into(mProfileImage);
+                            Picasso.with(MainActivity.this).load(data.getString("url")).transform(new RoundedTransformation(125, 0)).into(mProfileImage);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        userProfile.setUserProfile(object);
-                        userProfile.setCategory(category);
+                        mUserProfile.setUserProfile(object);
+                        mUserProfile.setCategory(category);
                         getResult();
-                        sendUserProfile();
-                        // Application code
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name,last_name, picture.width(300).height(300), likes.limit(100), birthday, email");
+        parameters.putString("fields", "id, first_name,last_name, picture.width(250).height(250), likes.limit(100), birthday, email");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -448,10 +389,8 @@ public class MainActivity extends AppCompatActivity {
 
     public class RoundedTransformation implements com.squareup.picasso.Transformation {
         private final int radius;
-        private final int margin;  // dp
+        private final int margin;
 
-        // radius is corner radii in dp
-        // margin is the board in dp
         public RoundedTransformation(final int radius, final int margin) {
             this.radius = radius;
             this.margin = margin;
@@ -495,131 +434,128 @@ public class MainActivity extends AppCompatActivity {
         if (shared.getBoolean("install", true) || UPDATE_DB) {
             Utilities.saveArray(new String[]{"Beautiful eyes, Cute smile, Silky hair",
                             "ตาตี่ จิตใจเหี้ยม",
-                            "result_1"},
+                            "result_1",
+                            "ตี๋อำมหิต"},
                     "A", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Nice skin, Good-looking, Adorable",
                             "บั้นท้ายใหญ่ ยิ้มง่าย",
-                            "result_2"},
+                            "result_2",
+                            "บั้นท้ายพิฆาต"},
                     "B", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Sexy, Charming, Attractive",
                             "ขาใหญ่ ขำขัน",
-                            "result_3"},
+                            "result_3",
+                            "ขาหมูสะท้านฟ้า"},
                     "C", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Glamorous lips, Perfect body, Nice attitude",
-                            "ตาเหล่ เซ็กซี่",
-                            "result_4"},
+                            "รูจมูกบาน",
+                            "result_4",
+                            "เหล่ระเริง"},
                     "D", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Slim body, Skinny Legs, Beautiful mind",
                             "คิ้วดก พูดตรง",
-                            "result_5"},
+                            "result_5", "" +
+                            "คิ้วสาหร่าย"},
                     "E", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Homely looking, Fine hairstyle, Positive attitude",
                             "รักแร้เหม็น ทะเล้น",
-                            "result_6"},
+                            "result_6",
+                            "กลิ่นตัวสะท้านโลกา"},
                     "F", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Friendly, Good-humored, Nice smile",
                             "จ้ำม่ำ กินเก่ง",
-                            "result_7"},
+                            "result_7",
+                            "จอมเขมือบแห่งศตวรรษ"},
                     "G", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Nice legs, Curvy body, Easy-going",
                             "ขนจมูกยาว รวย",
-                            "result_8"},
+                            "result_8",
+                            "เส้นขนทะยานฟ้า"},
                     "H", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Chubby, Good-humoured, Friendly",
                             "รักแร้ดำ จิตใจดี",
-                            "result_9"},
+                            "result_9",
+                            "หมักหมมบ่มเชื้อรา"},
                     "I", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Skinny, Funny, Have Sense of Humor",
                             "ริมฝีปากอวบ ถ่อมตน",
-                            "result_10"},
+                            "result_10",
+                            "จูบเย้ยจันทร์"},
                     "J", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Adorable Dimples, Round Face, Fine Skin",
-                            "ไม่มีรอยตีนกา ขี้เหนียว",
-                            "result_11"},
+                            "ไร้รอยตีนกา ขี้เหนียว",
+                            "result_11",
+                            "หน้าเด็กตลอดกาล"},
                     "K", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Cheeky, Funny, Attractive",
-                            "หน้าตาบ้านๆ ใจดี",
-                            "result_12"},
+                            "หูกาง ชอบรับฟัง",
+                            "result_12",
+                            "หน้าคอนโดๆ"},
                     "L", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Rich, Generous, Beautiful face",
                             "ขนหน้าแข้งดก เป็นกันเอง",
-                            "result_13"},
+                            "result_13",
+                            "ขาหัวไชเท้า"},
                     "M", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Not Aged, Smooth Skin, No Wrinkles",
                             "ขายาว ขี้งอน",
-                            "result_14"},
+                            "result_14",
+                            "ขาเรียวเกี่ยวสวาท"},
                     "N", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Elegant, Adorable, Pleasing",
                             "พุงนุ่มนิ่ม อ่อนโยน",
-                            "result_15"},
+                            "result_15",
+                            "มาร์ชเมลโล่"},
                     "O", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Blushing Cheeks, Nice Makeup, Pretty Face",
                             "รักแร้ขาว กินจุ",
-                            "result_16"},
+                            "result_16",
+                            "วงแขนดวงจันทรา"},
                     "P", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Long Legs, Cool Hairstyle, Fashionable style",
                             "คิ้วบาง ตลก",
-                            "result_17"},
+                            "result_17",
+                            "คิ้ว 0 มิติ"},
                     "R", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Polite, Quiet, Modest",
                             "จมูกโด่ง ซน",
-                            "result_18"},
+                            "result_18",
+                            "พิน็อคคิโอ"},
                     "S", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Cool Hobbies, Cool Friend, Fashionable style",
                             "ขนแขนดก ประหยัด",
-                            "result_19"},
+                            "result_19",
+                            "ขนแขนอเมซอน"},
                     "T", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Extroverted, Easy-going, Kind",
                             "เอวบาง เข้าสังคมเก่ง",
-                            "result_20"},
+                            "result_20",
+                            "เอวเพรียวเกี่ยวใจ"},
                     "U", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Nice Eyebrows, Elegant Hair, Funny",
                             "เท้าเหม็น ใจดี",
-                            "result_21"},
+                            "result_21",
+                            "กลิ่นบาทาปราบมาร"},
                     "V", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Good Manner, Friendly, Cute",
                             "ฟันเหยิน จริงใจ",
-                            "result_22"},
+                            "result_22",
+                            "ฟันขูดมะพร้าว"},
                     "W", PREFS, MainActivity.this);
             Utilities.saveArray(new String[]{"Young, Beautiful Mind, Kind",
-                            "ผมหยิก รวย",
-                            "result_23"},
+                            "หัวหยิก รวย",
+                            "result_23",
+                            "ฝอยขัดหม้อ"},
                     "null", PREFS, MainActivity.this);
             editor.putBoolean("install", false);
             editor.apply();
         }
     }
 
-    public String[] loadArray(String arrayName, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(PREFS, 0);
-        int size = prefs.getInt(arrayName + "_size", 0);
-        String array[] = new String[size];
-        for (int i = 0; i < size; i++)
-            array[i] = prefs.getString(arrayName + "_" + i, null);
-        return array;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppEventsLogger.activateApp(this);
-        if (AccessToken.getCurrentAccessToken() != null && !mLoggedIn) {
-            mLoggedIn = true;
-            getUserProfile();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        AppEventsLogger.deactivateApp(this);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-
     }
 
 }

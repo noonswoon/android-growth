@@ -15,7 +15,39 @@
         android:text="Start"
         android:id="@+id/button_start"
         android:background="@drawable/button_c_start"
-        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="125dp"/>
+        android:enabled="false"/>
+
+    <view
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        class="com.facebook.login.widget.LoginButton"
+        android:id="@+id/button_login"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/button_start"
+        android:layout_marginTop="25dp"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_button_profile"
+        android:src="@drawable/profile_default"
+        android:maxHeight="250dp"
+        android:maxWidth="250dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_edit_name"
+        android:layout_below="@+id/image_button_profile"
+        android:layout_alignEnd="@+id/image_button_profile"
+        android:hint="Insert your name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:maxLines="1"
+        android:gravity="center"/>
 </RelativeLayout>

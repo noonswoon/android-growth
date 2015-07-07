@@ -17,11 +17,13 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".SplashScreen"
-            android:label="@string/title_activity_splash_screen" >
+            android:label="@string/title_activity_splash_screen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,7 +34,8 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
@@ -41,11 +44,13 @@
 
         <activity
             android:name=".Questionnaire"
-            android:label="@string/title_activity_questionaire" >
+            android:label="@string/title_activity_questionaire"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".LoginScreen"
-            android:label="@string/title_activity_login_screen" >
+            android:label="@string/title_activity_login_screen"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

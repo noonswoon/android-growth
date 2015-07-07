@@ -16,7 +16,6 @@ import android.widget.TextView;
 public class Questionnaire extends AppCompatActivity implements View.OnClickListener {
 
     private static final String PREFS = "question_db";
-    private static final boolean UPDATE_DB = false;
     private static final int TOTAL_QUESTION = 5;
     private TextView mQuestion;
     private RadioButton mChoice1;
@@ -72,23 +71,23 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = shared.edit();
         if (shared.getBoolean("install", true) || true) {
-            editor.putString("Q1", "Do you think that you are cute?");
-            Utilities.saveArray(new String[]{"Definitely, I am cute!", "Sometimes", "Never, I don’t think I am cute"}, "QC1", PREFS, Questionnaire.this);
+            editor.putString("Q1", "คุณคิดว่าตัวเองน่ารักรึเปล่า");
+            Utilities.saveArray(new String[]{"แน่นอน ก็ฉันน่ารักอะ", "ก็มีบ้างบางครั้งนะ", "ไม่เลย ฉันไม่คิดว่าฉันน่ารัก"}, "QC1", PREFS, Questionnaire.this);
             Utilities.saveArray(new String[]{"0", "-1", "1"}, "QP1", PREFS, Questionnaire.this);
 
-            editor.putString("Q2", "How often do you wear a makeup?");
-            Utilities.saveArray(new String[]{"Every day", "Sometimes", "Never"}, "QC2", PREFS, Questionnaire.this);
+            editor.putString("Q2", "คุณแต่งหน้าบ่อยแค่ไหน");
+            Utilities.saveArray(new String[]{"แต่งทุกวันเลย", "บางครั้งก็แต่ง", "ไม่เคยเลย"}, "QC2", PREFS, Questionnaire.this);
             Utilities.saveArray(new String[]{"-1", "1", "0"}, "QP2", PREFS, Questionnaire.this);
 
-            editor.putString("Q3", "How often do you workout ?");
-            Utilities.saveArray(new String[]{"Every day", "Almost every day", "Never"}, "QC3", PREFS, Questionnaire.this);
+            editor.putString("Q3", "คุณออกกำลังกายบ่อยแค่ไหน");
+            Utilities.saveArray(new String[]{"ออกทุกวันนะ", "เกือบทุกวัน บางวันก็ไม่ได้ออก", "ไม่เคยเลย"}, "QC3", PREFS, Questionnaire.this);
             Utilities.saveArray(new String[]{"0", "1", "-1"}, "QP3", PREFS, Questionnaire.this);
 
-            editor.putString("Q4", "What kind of food do you like?");
-            Utilities.saveArray(new String[]{"Thai Food", "Chinese/Japanese/Korean Food", "Western Food"}, "QC4", PREFS, Questionnaire.this);
+            editor.putString("Q4", "คุณชอบกินอะไร");
+            Utilities.saveArray(new String[]{"อาหารไทย", "อาหารจีน/ญี่ปุ่น/เกาหลี", "อาหารฝรั่ง"}, "QC4", PREFS, Questionnaire.this);
             Utilities.saveArray(new String[]{"-1", "0", "1"}, "QP4", PREFS, Questionnaire.this);
 
-            editor.putString("Q5", "Please rate how attractive you are?");
+            editor.putString("Q5", "ลองประเมิณความน่าดึงดูดของคุณ");
             Utilities.saveArray(new String[]{"7 - 10", "4 - 6", "0 - 3"}, "QC5", PREFS, Questionnaire.this);
             Utilities.saveArray(new String[]{"1", "0", "-1"}, "QP5", PREFS, Questionnaire.this);
 

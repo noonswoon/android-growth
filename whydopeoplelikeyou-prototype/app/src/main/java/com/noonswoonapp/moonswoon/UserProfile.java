@@ -1,6 +1,7 @@
 package com.noonswoonapp.moonswoon;
 
 import android.app.Application;
+import android.net.Uri;
 
 import com.parse.Parse;
 
@@ -10,8 +11,13 @@ import java.util.ArrayList;
 
 
 public class UserProfile extends Application{
+
+
     private ArrayList<String> mCategory;
     private JSONObject mUserProfile;
+    private String mParseId;
+    private Uri mProfileImage;
+    private String mUserName;
 
     @Override
     public void onCreate() {
@@ -34,5 +40,29 @@ public class UserProfile extends Application{
 
     public void setCategory(ArrayList<String> category) {
         this.mCategory = category;
+    }
+
+    public String getParseId() {
+        return mParseId;
+    }
+
+    public void setParseId(String parseId) {
+        mParseId = parseId;
+    }
+
+    public Uri getProfileImage() {
+        return mProfileImage;
+    }
+
+    public void setProfileImage(Uri profileImage) {
+        mProfileImage = profileImage;
+    }
+
+    public String getUserName() {
+        return mUserName;
+    }
+
+    public void setUserName(String userName) {
+        mUserName = userName;
     }
 }

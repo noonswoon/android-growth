@@ -3,4 +3,6 @@
     <item android:state_pressed="true"
           android:drawable="@drawable/button_share_color" />
     <item android:drawable="@drawable/button_share_color_pressed" />
+    <item android:state_enabled="false"
+          android:drawable="@drawable/button_share_color_unenabled" />
 </selector>
