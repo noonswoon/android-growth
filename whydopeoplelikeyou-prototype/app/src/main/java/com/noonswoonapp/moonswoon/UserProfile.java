@@ -16,6 +16,7 @@ public class UserProfile extends Application{
 
     public static GoogleAnalytics analytics;
     public static Tracker tracker;
+    private Tracker mTracker;
     private ArrayList<String> mCategory;
     private JSONObject mUserProfile;
     private String mParseId;
@@ -35,6 +36,15 @@ public class UserProfile extends Application{
         tracker.enableExceptionReporting(true);
         tracker.enableAdvertisingIdCollection(true);
         tracker.enableAutoActivityTracking(true);
+    }
+
+    synchronized public Tracker getDefaultTracker() {
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+            mTracker = analytics.newTracker(R.xml.global_tracker);
+        }
+        return mTracker;
     }
 
     public JSONObject getUserProfile() {

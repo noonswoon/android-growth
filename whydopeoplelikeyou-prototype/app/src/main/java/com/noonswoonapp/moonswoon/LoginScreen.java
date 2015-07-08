@@ -30,6 +30,9 @@ import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
@@ -53,6 +56,7 @@ public class LoginScreen extends AppCompatActivity {
     private Boolean mLoggedIn = false;
     private ImageButton mProfileImage;
     private ProgressDialog mProgressDialog;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +75,18 @@ public class LoginScreen extends AppCompatActivity {
         mName.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         mName.requestFocus();
 
-        mProgressDialog = Utilities.createProgressDialog("Retrieving user profile...", LoginScreen.this);
-        mProgressDialog.show();
+
+
+        UserProfile application = (UserProfile) getApplication();
+        mTracker = application.getDefaultTracker();
+
+        Tracker tracker = UserProfile.tracker;
+        tracker.setScreenName("main screen");
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("UX")
+                .setAction("click")
+                .setLabel("submit")
+                .build());
 
         Typeface font = Typeface.createFromAsset(getAssets(), "font/supermarket.ttf");
         mStartButton.setTypeface(font);
@@ -109,6 +123,14 @@ public class LoginScreen extends AppCompatActivity {
             }
         };
 
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mProgressDialog = Utilities.createProgressDialog("Retrieving user profile...", LoginScreen.this);
+                mProgressDialog.show();
+            }
+        });
+
         mLoginButton.setReadPermissions("public_profile, email, user_likes, user_photos, user_birthday, email");
         mLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -130,6 +152,8 @@ public class LoginScreen extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void getUserProfile() {
         GraphRequest request = GraphRequest.newMeRequest(
@@ -272,5 +296,18 @@ public class LoginScreen extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         AppEventsLogger.deactivateApp(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleAnalytics.getInstance(LoginScreen.this).reportActivityStart(this);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        GoogleAnalytics.getInstance(LoginScreen.this).reportActivityStop(this);
     }
 }
