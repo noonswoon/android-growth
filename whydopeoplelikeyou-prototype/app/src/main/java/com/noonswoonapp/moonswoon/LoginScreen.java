@@ -1,5 +1,6 @@
 package com.noonswoonapp.moonswoon;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -11,6 +12,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +52,7 @@ public class LoginScreen extends AppCompatActivity {
     private UserProfile mUserProfile;
     private Boolean mLoggedIn = false;
     private ImageButton mProfileImage;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,12 @@ public class LoginScreen extends AppCompatActivity {
         mLoginButton = (LoginButton) findViewById(R.id.button_login);
         mProfileImage = (ImageButton) findViewById(R.id.image_button_profile);
         mName = (EditText) findViewById(R.id.text_edit_name);
+
+        mName.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        mName.requestFocus();
+
+        mProgressDialog = Utilities.createProgressDialog("Retrieving user profile...", LoginScreen.this);
+        mProgressDialog.show();
 
         Typeface font = Typeface.createFromAsset(getAssets(), "font/supermarket.ttf");
         mStartButton.setTypeface(font);
@@ -92,8 +101,10 @@ public class LoginScreen extends AppCompatActivity {
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
                                                        AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
-                    mStartButton.setEnabled(false);
                     mLoggedIn = false;
+                    mStartButton.setVisibility(View.INVISIBLE);
+                    mProfileImage.setVisibility(View.INVISIBLE);
+                    mName.setVisibility(View.INVISIBLE);
                 }
             }
         };
@@ -102,9 +113,9 @@ public class LoginScreen extends AppCompatActivity {
         mLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                getUserProfile();
                 mLoggedIn = true;
                 accessTokenTracker.startTracking();
+                getUserProfile();
                 Log.e("Login Result:", "Success");
             }
 
@@ -152,9 +163,9 @@ public class LoginScreen extends AppCompatActivity {
 
                         mUserProfile.setUserProfile(object);
                         mUserProfile.setCategory(category);
-
                         sendUserProfile();
                     }
+
                 }
 
         );
@@ -165,23 +176,27 @@ public class LoginScreen extends AppCompatActivity {
     }
 
     private void sendUserProfile() {
-        final ParseObject mUser = new ParseObject("UserProfile");
+        final ParseObject mUser = new ParseObject(ParseConstant.CLASS_USER_PROFILE);
         JSONObject profile = mUserProfile.getUserProfile();
         try {
-            mUser.put("FirstName", profile.getString("first_name"));
-            mUser.put("LastName", profile.getString("last_name"));
-            mUser.put("Email", profile.getString("email"));
-            mUser.put("BirthDate", profile.getString("birthday"));
+            mUser.put(ParseConstant.KEY_FIRST_NAME, profile.getString("first_name"));
+            mUser.put(ParseConstant.KEY_LAST_NAME, profile.getString("last_name"));
+            mUser.put(ParseConstant.KEY_EMAIL, profile.getString("email"));
+            mUser.put(ParseConstant.KEY_BIRTH_DATE, profile.getString("birthday"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         mUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
                     Log.e("Send user profile:", "Success");
                     mUserProfile.setParseId(mUser.getObjectId());
-                    mStartButton.setEnabled(true);
+                    mStartButton.setVisibility(View.VISIBLE);
+                    mProfileImage.setVisibility(View.VISIBLE);
+                    mName.setVisibility(View.VISIBLE);
+                    mProgressDialog.dismiss();
                 } else {
                     Log.e("Send user profile:", "Failed");
                 }

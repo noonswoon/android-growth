@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Question"
+            tools:text="Question"
             android:id="@+id/view_text_question"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
@@ -33,20 +33,20 @@
             android:layout_width="match_parent"
             android:layout_height="226dp"
             android:layout_weight="5"
-            android:background="@drawable/line">
+            android:background="#ffffffff">
 
             <RadioButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/button_choice1"
                 android:layout_centerHorizontal="true"
-                android:background="#c8d7d7d7"
+                android:background="#FFFFFFFF"
                 android:layout_alignParentTop="false"
                 android:layout_marginBottom="40dp"
                 android:layout_above="@+id/button_choice2"
                 android:layout_alignLeft="@+id/button_choice2"
                 android:layout_alignRight="@+id/button_choice2"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 style="@style/MyRadioButtonStyle"
                 />
 
@@ -54,11 +54,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/button_choice2"
-                android:background="#c8d7d7d7"
+                android:background="#FFFFFFFF"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="50dp"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 style="@style/MyRadioButtonStyle"/>
 
             <RadioButton
@@ -69,8 +69,8 @@
                 android:layout_marginTop="40dp"
                 android:layout_alignLeft="@+id/button_choice1"
                 android:layout_alignRight="@+id/button_choice2"
-                android:background="#c8d7d7d7"
-                android:textSize="30sp"
+                android:background="#FFFFFFFF"
+                android:textSize="25sp"
                 style="@style/MyRadioButtonStyle"/>
         </RelativeLayout>
     </LinearLayout>

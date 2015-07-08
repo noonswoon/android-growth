@@ -1,6 +1,7 @@
 package com.noonswoonapp.moonswoon;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -15,4 +16,13 @@ public class Utilities {
         return editor.commit();
     }
 
+    public static ProgressDialog createProgressDialog(String Message, Context context) {
+        ProgressDialog mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage(Message);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.show();
+        return mProgressDialog;
+    }
 }
