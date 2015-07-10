@@ -15,7 +15,6 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -101,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
         changeFontSuperMarket((Button) findViewById(R.id.button_retry));
         changeFontSuperMarket((Button) findViewById(R.id.button_share));
 
-        mProgressDialog = Utilities.createProgressDialog("Generating Result...", MainActivity.this);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                mProgressDialog.dismiss();
-            }
-        }, 3000);
+//        mProgressDialog = Utilities.createProgressDialog("Generating Result...", MainActivity.this);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//                mProgressDialog.dismiss();
+//            }
+//        }, 3000);
 
         mRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 mResultLayout.getLayoutParams().width = (int) (height * (1.911 / 2));
                 mResultLayout.requestLayout();
                 double imgHeight = mResultImage.getHeight();
-                mResultTextViewTH.getLayoutParams().height = (int) (imgHeight / 5);
+                mResultTextViewTH.getLayoutParams().height = (int) (imgHeight / 4);
                 mResultTextViewTH.requestLayout();
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
                     mResultLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -268,21 +267,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Sharer.Result result) {
                 mProgressDialog.dismiss();
-                showAds();
+//                showAds();
                 Log.e("Share Result:", "Share Success");
             }
 
             @Override
             public void onCancel() {
                 mProgressDialog.dismiss();
-                showAds();
+//                showAds();
                 Log.e("Share Result:", "Share Cancel");
             }
 
             @Override
             public void onError(FacebookException e) {
                 mProgressDialog.dismiss();
-                showAds();
+//                showAds();
                 Log.e("Share Result:", "Share Error");
                 Log.e("Share Result:", e.toString());
             }

@@ -12,4 +12,5 @@
     <string name="main_button_retry">เล่นใหม่</string>
     <string name="login_edit_text_hint">Insert your name</string>
     <string name="login_start_button">เริ่มเลย!</string>
+    <string name="title_activity_test">Test</string>
 </resources>

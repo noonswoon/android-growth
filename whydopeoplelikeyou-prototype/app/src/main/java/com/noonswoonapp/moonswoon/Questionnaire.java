@@ -8,13 +8,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
+
 
 public class Questionnaire extends AppCompatActivity implements View.OnClickListener {
 
+    private AnimatedCircleLoadingView animatedCircleLoadingView;
     private static final String PREFS = "question_db";
     private static final int TOTAL_QUESTION = 5;
     private TextView mQuestion;
@@ -22,6 +26,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private RadioButton mChoice1;
     private RadioButton mChoice2;
     private RadioButton mChoice3;
+    private FrameLayout mLoading;
     private int question = 1;
     private int point = 0;
 
@@ -35,8 +40,10 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         changeFontSuperMarket(mChoice1 = (RadioButton) findViewById(R.id.button_choice1));
         changeFontSuperMarket(mChoice2 = (RadioButton) findViewById(R.id.button_choice2));
         changeFontSuperMarket(mChoice3 = (RadioButton) findViewById(R.id.button_choice3));
-
+        animatedCircleLoadingView = (AnimatedCircleLoadingView) findViewById(R.id.circle_loading_view);
+        mLoading = (FrameLayout) findViewById(R.id.layout_circle_loading);
         loadQuestion();
+        startLoading();
 
         mChoice1.setOnClickListener(this);
         mChoice2.setOnClickListener(this);
@@ -94,14 +101,49 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
 
     private void loadActivity() {
         if (question == TOTAL_QUESTION) {
-            Intent intent = new Intent(Questionnaire.this, MainActivity.class);
-            intent.putExtra("point", point);
-            startActivity(intent);
-            finish();
+            mLoading.setVisibility(View.VISIBLE);
+            animatedCircleLoadingView.setVisibility(View.VISIBLE);
+            startPercentMockThread();
         }
         if (question < TOTAL_QUESTION) {
             question++;
             loadQuestion();
         }
+    }
+
+    private void startLoading() {
+        animatedCircleLoadingView.startDeterminate();
+    }
+
+    private void startPercentMockThread() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1500);
+                    for (int i = 0; i <= 100; i++) {
+                        Thread.sleep(20);
+                        changePercent(i);
+                    }
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(Questionnaire.this, MainActivity.class);
+                intent.putExtra("point", point);
+                startActivity(intent);
+                finish();
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    private void changePercent(final int percent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                animatedCircleLoadingView.setPercent(percent);
+            }
+        });
     }
 }
