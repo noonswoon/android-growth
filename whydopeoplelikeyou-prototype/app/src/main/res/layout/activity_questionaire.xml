@@ -2,106 +2,88 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
                 tools:context="com.noonswoonapp.moonswoon.Questionnaire"
                 android:background="@drawable/bg">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/view_image_question"
-        tools:src="@drawable/question_1"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:maxHeight="250dp"
-        android:maxWidth="250dp"
-        android:layout_marginTop="16dp"/>
-
-    <com.noonswoonapp.moonswoon.AutoResizeTextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        tools:text="Question"
-        android:id="@+id/view_text_question"
-        android:gravity="center|center_vertical|center_horizontal"
-        android:textSize="50sp"
-        android:maxLines="1"
-        android:textIsSelectable="false"
-        android:background="#00ffffff"
-        android:textColor="#FFFFFF"
-        android:layout_alignParentStart="false"
-        android:layout_below="@+id/view_image_question"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
-
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffffff"
-        android:id="@+id/layout_answer"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/view_text_question"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp">
+        android:id="@+id/layout_questionnaire">
 
-        <RadioButton
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/view_image_question"
+            tools:src="@drawable/question_1"
+            android:adjustViewBounds="true"
+            android:maxWidth="200dp"
+            android:maxHeight="200dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button_choice1"
-            android:background="#FFFFFFFF"
+            tools:text="Question"
+            android:id="@+id/view_text_question"
             android:layout_alignParentTop="true"
-            android:textSize="25sp"
-            style="@style/MyRadioButtonStyle"
-            android:checked="false"
-            tools:text="test1"/>
+            android:layout_centerHorizontal="true"
+            android:gravity="center|center_vertical|center_horizontal"
+            android:textSize="30sp"
+            android:textIsSelectable="false"
+            android:layout_weight="2"
+            android:background="#00ffffff"
+            android:textColor="#FFFFFF"/>
 
-        <RadioButton
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_choice2"
-            android:background="#FFFFFFFF"
-            android:textSize="25sp"
-            style="@style/MyRadioButtonStyle"
-            android:layout_below="@+id/button_choice1"
-            android:layout_above="@+id/button_choice3"
-            tools:text="test2"/>
+            android:layout_height="226dp"
+            android:layout_weight="5"
+            android:background="#ffffffff">
 
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_choice3"
-            android:background="#FFFFFFFF"
-            android:textSize="25sp"
-            style="@style/MyRadioButtonStyle"
-            android:layout_alignParentBottom="true"
-            tools:text="test3"/>
-    </RelativeLayout>
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_choice1"
+                android:layout_centerHorizontal="true"
+                android:background="#FFFFFFFF"
+                android:layout_alignParentTop="false"
+                android:layout_marginBottom="25dp"
+                android:layout_above="@+id/button_choice2"
+                android:layout_alignLeft="@+id/button_choice2"
+                android:layout_alignRight="@+id/button_choice2"
+                android:textSize="25sp"
+                style="@style/MyRadioButtonStyle"
+                android:checked="false"/>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/view_image_question"
-        android:layout_alignStart="@+id/view_image_question"
-        android:background="#e6000000"
-        android:visibility="invisible"
-        android:id="@+id/layout_circle_loading">
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_choice2"
+                android:background="#FFFFFFFF"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="50dp"
+                android:textSize="25sp"
+                style="@style/MyRadioButtonStyle"/>
 
-        <com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/circle_loading_view"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            app:mainColor="#ffb80434"
-            app:secondaryColor="#ffb80434"
-            android:layout_alignParentTop="false"
-            android:layout_alignParentBottom="false"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:visibility="invisible"/>
-    </FrameLayout>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_choice3"
+                android:layout_below="@+id/button_choice2"
+                android:layout_marginTop="25dp"
+                android:layout_alignLeft="@+id/button_choice1"
+                android:layout_alignRight="@+id/button_choice2"
+                android:background="#FFFFFFFF"
+                android:textSize="25sp"
+                style="@style/MyRadioButtonStyle"/>
+        </RelativeLayout>
 
+    </LinearLayout>
 
 </RelativeLayout>

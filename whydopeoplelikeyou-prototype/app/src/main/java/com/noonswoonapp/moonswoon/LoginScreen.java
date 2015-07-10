@@ -90,7 +90,6 @@ public class LoginScreen extends AppCompatActivity {
         mProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -264,8 +263,8 @@ public class LoginScreen extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             Uri uri = data.getData();
-            Toast.makeText(LoginScreen.this,uri.toString(),Toast.LENGTH_LONG).show();
             mUserProfile.setProfileImage(uri);
+
             Picasso.with(LoginScreen.this).load(uri).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
         }
     }
