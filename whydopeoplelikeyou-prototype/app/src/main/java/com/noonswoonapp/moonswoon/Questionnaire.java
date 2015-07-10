@@ -1,6 +1,5 @@
 package com.noonswoonapp.moonswoon;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -18,7 +18,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private static final String PREFS = "question_db";
     private static final int TOTAL_QUESTION = 5;
     private TextView mQuestion;
-    private ProgressDialog mProgressDialog;
+    private ImageView mQuestionImage;
     private RadioButton mChoice1;
     private RadioButton mChoice2;
     private RadioButton mChoice3;
@@ -30,6 +30,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionaire);
 
+        mQuestionImage = (ImageView) findViewById(R.id.view_image_question);
         changeFontSuperMarket(mQuestion = (TextView) findViewById(R.id.view_text_question));
         changeFontSuperMarket(mChoice1 = (RadioButton) findViewById(R.id.button_choice1));
         changeFontSuperMarket(mChoice2 = (RadioButton) findViewById(R.id.button_choice2));
@@ -44,7 +45,11 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
 
     private void loadQuestion() {
         SharedPreferences shared = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        mQuestion.setText(shared.getString("Q" + String.valueOf(question), null));
+
+        String drawableName = shared.getString("Q" + String.valueOf(question) + "_1", null);
+        int resID = getResources().getIdentifier(drawableName, "drawable", getPackageName());
+        mQuestionImage.setImageResource(resID);
+        mQuestion.setText(shared.getString("Q" + String.valueOf(question) + "_0", null));
         mChoice1.setText(shared.getString("QC" + String.valueOf(question) + "_0", null));
         mChoice2.setText(shared.getString("QC" + String.valueOf(question) + "_1", null));
         mChoice3.setText(shared.getString("QC" + String.valueOf(question) + "_2", null));
@@ -94,7 +99,9 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
             startActivity(intent);
             finish();
         }
-        question++;
-        loadQuestion();
+        if (question < TOTAL_QUESTION) {
+            question++;
+            loadQuestion();
+        }
     }
 }

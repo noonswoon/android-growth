@@ -15,6 +15,16 @@
         android:layout_height="match_parent"
         android:id="@+id/layout_questionnaire">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/view_image_question"
+            tools:src="@drawable/question_1"
+            android:adjustViewBounds="true"
+            android:maxWidth="200dp"
+            android:maxHeight="200dp"
+            android:layout_gravity="center_horizontal"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,13 +52,13 @@
                 android:layout_centerHorizontal="true"
                 android:background="#FFFFFFFF"
                 android:layout_alignParentTop="false"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="25dp"
                 android:layout_above="@+id/button_choice2"
                 android:layout_alignLeft="@+id/button_choice2"
                 android:layout_alignRight="@+id/button_choice2"
                 android:textSize="25sp"
                 style="@style/MyRadioButtonStyle"
-                />
+                android:checked="false"/>
 
             <RadioButton
                 android:layout_width="match_parent"
@@ -66,13 +76,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_choice3"
                 android:layout_below="@+id/button_choice2"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="25dp"
                 android:layout_alignLeft="@+id/button_choice1"
                 android:layout_alignRight="@+id/button_choice2"
                 android:background="#FFFFFFFF"
                 android:textSize="25sp"
                 style="@style/MyRadioButtonStyle"/>
         </RelativeLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

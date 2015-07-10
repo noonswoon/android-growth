@@ -166,7 +166,7 @@ public class SplashScreen extends AppCompatActivity {
                             "หัวหยิก รวย",
                             "result_23",
                             "ฝอยขัดหม้อ"},
-                    "null", RESULT_PREFS, this);
+                    "X", RESULT_PREFS, this);
             editor.putBoolean("install", false);
             editor.apply();
         }
@@ -178,23 +178,23 @@ public class SplashScreen extends AppCompatActivity {
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = shared.edit();
         if (shared.getBoolean("install", true)) {
-            editor.putString("Q1", "คุณคิดว่าตัวเองน่ารักรึเปล่า");
+            Utilities.saveArray(new String[]{"คุณคิดว่าตัวเองน่ารักรึเปล่า", "question_1"}, "Q1", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"แน่นอน ก็ฉันน่ารักอะ", "ก็มีบ้างบางครั้งนะ", "ไม่เลย ฉันไม่คิดว่าฉันน่ารัก"}, "QC1", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"0", "-1", "1"}, "QP1", QUESTION_PREFS, this);
 
-            editor.putString("Q2", "คุณแต่งหน้าบ่อยแค่ไหน");
+            Utilities.saveArray(new String[]{"คุณแต่งหน้าบ่อยแค่ไหน", "question_2"}, "Q2", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"แต่งทุกวันเลย", "บางครั้งก็แต่ง", "ไม่เคยเลย"}, "QC2", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"-1", "1", "0"}, "QP2", QUESTION_PREFS, this);
 
-            editor.putString("Q3", "คุณออกกำลังกายบ่อยแค่ไหน");
+            Utilities.saveArray(new String[]{"คุณออกกำลังกายบ่อยแค่ไหน", "question_3"}, "Q3", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"ออกทุกวันนะ", "เกือบทุกวัน บางวันก็ไม่ได้ออก", "ไม่เคยเลย"}, "QC3", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"0", "1", "-1"}, "QP3", QUESTION_PREFS, this);
 
-            editor.putString("Q4", "คุณโกนหนวด/เครา/ขน ของคุณบ่อยแค่ไหน");
+            Utilities.saveArray(new String[]{"คุณโกนหนวด/เครา/ขน ของคุณบ่อยแค่ไหน", "question_4"}, "Q4", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"ทุกวัน", "ทุกสัปดาห์", "ไม่เคย"}, "QC4", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"-1", "0", "1"}, "QP4", QUESTION_PREFS, this);
 
-            editor.putString("Q5", "ลองประเมิณความน่าดึงดูดของคุณ");
+            Utilities.saveArray(new String[]{"ลองประเมิณความน่าดึงดูดของคุณ", "question_5"}, "Q5", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"7 - 10", "4 - 6", "0 - 3"}, "QC5", QUESTION_PREFS, this);
             Utilities.saveArray(new String[]{"1", "0", "-1"}, "QP5", QUESTION_PREFS, this);
 

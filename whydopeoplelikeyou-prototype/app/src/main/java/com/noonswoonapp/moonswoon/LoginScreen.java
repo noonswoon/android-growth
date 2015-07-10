@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -30,9 +32,6 @@ import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
@@ -56,7 +55,7 @@ public class LoginScreen extends AppCompatActivity {
     private Boolean mLoggedIn = false;
     private ImageButton mProfileImage;
     private ProgressDialog mProgressDialog;
-    private Tracker mTracker;
+    private TextView mImageDescr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +65,7 @@ public class LoginScreen extends AppCompatActivity {
 
         setContentView(R.layout.activity_login_screen);
 
+        mImageDescr = (TextView) findViewById(R.id.view_text_image_description);
         mUserProfile = (UserProfile) getApplication();
         mStartButton = (Button) findViewById(R.id.button_start);
         mLoginButton = (LoginButton) findViewById(R.id.button_login);
@@ -74,19 +74,6 @@ public class LoginScreen extends AppCompatActivity {
 
         mName.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         mName.requestFocus();
-
-
-
-        UserProfile application = (UserProfile) getApplication();
-        mTracker = application.getDefaultTracker();
-
-        Tracker tracker = UserProfile.tracker;
-        tracker.setScreenName("main screen");
-        tracker.send(new HitBuilders.EventBuilder()
-                .setCategory("UX")
-                .setAction("click")
-                .setLabel("submit")
-                .build());
 
         Typeface font = Typeface.createFromAsset(getAssets(), "font/supermarket.ttf");
         mStartButton.setTypeface(font);
@@ -123,19 +110,12 @@ public class LoginScreen extends AppCompatActivity {
             }
         };
 
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mProgressDialog = Utilities.createProgressDialog("Retrieving user profile...", LoginScreen.this);
-                mProgressDialog.show();
-            }
-        });
-
         mLoginButton.setReadPermissions("public_profile, email, user_likes, user_photos, user_birthday, email");
         mLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 mLoggedIn = true;
+                mLoginButton.setVisibility(View.INVISIBLE);
                 accessTokenTracker.startTracking();
                 getUserProfile();
                 Log.e("Login Result:", "Success");
@@ -149,6 +129,7 @@ public class LoginScreen extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
                 Log.e("Login Result:", "Error");
+                Toast.makeText(LoginScreen.this, "Login Error. Please try again.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -156,6 +137,8 @@ public class LoginScreen extends AppCompatActivity {
 
 
     private void getUserProfile() {
+        mProgressDialog = Utilities.createProgressDialog("Retrieving user profile...", LoginScreen.this);
+        mProgressDialog.show();
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -179,14 +162,22 @@ public class LoginScreen extends AppCompatActivity {
                             Log.e("JSON: ", data.getString("url"));
                             Log.e("JSON: ", "https://graph.facebook.com/" + object.getString("id") + "/picture?type=large");
                             mUserProfile.setProfileImage(Uri.parse(data.getString("url")));
+
                             Picasso.with(LoginScreen.this).load(data.getString("url")).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
+
                             mName.setText(object.getString("first_name") + " " + object.getString("last_name"));
+                            mName.setSelection(mName.getText().length());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         mUserProfile.setUserProfile(object);
                         mUserProfile.setCategory(category);
+                        mStartButton.setVisibility(View.VISIBLE);
+                        mProfileImage.setVisibility(View.VISIBLE);
+                        mName.setVisibility(View.VISIBLE);
+                        mImageDescr.setVisibility(View.VISIBLE);
+                        mProgressDialog.dismiss();
                         sendUserProfile();
                     }
 
@@ -217,10 +208,6 @@ public class LoginScreen extends AppCompatActivity {
                 if (e == null) {
                     Log.e("Send user profile:", "Success");
                     mUserProfile.setParseId(mUser.getObjectId());
-                    mStartButton.setVisibility(View.VISIBLE);
-                    mProfileImage.setVisibility(View.VISIBLE);
-                    mName.setVisibility(View.VISIBLE);
-                    mProgressDialog.dismiss();
                 } else {
                     Log.e("Send user profile:", "Failed");
                 }
@@ -287,6 +274,7 @@ public class LoginScreen extends AppCompatActivity {
         super.onResume();
         AppEventsLogger.activateApp(this);
         if (AccessToken.getCurrentAccessToken() != null && !mLoggedIn) {
+            mLoginButton.setVisibility(View.INVISIBLE);
             mLoggedIn = true;
             getUserProfile();
         }
@@ -301,13 +289,11 @@ public class LoginScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        GoogleAnalytics.getInstance(LoginScreen.this).reportActivityStart(this);
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
-        GoogleAnalytics.getInstance(LoginScreen.this).reportActivityStop(this);
     }
 }

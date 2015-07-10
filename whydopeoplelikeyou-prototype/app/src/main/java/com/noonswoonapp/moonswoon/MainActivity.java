@@ -15,6 +15,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -70,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
     private ShareDialog mShareDialog;
     private ShareLinkContent mShareLinkContent;
     private boolean mUploadSuccess;
-    private TextView mWaterMark;
+    private TextView mWaterMark1;
+    private TextView mWaterMark2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         mResultImage = (ImageView) findViewById(R.id.image_result);
         mRetry = (Button) findViewById(R.id.button_retry);
         mShareDialog = new ShareDialog(MainActivity.this);
-        mWaterMark = (TextView) findViewById(R.id.view_text_watermark);
+        mWaterMark1 = (TextView) findViewById(R.id.view_text_watermark1);
+        mWaterMark2 = (TextView) findViewById(R.id.view_text_watermark2);
         changeFontSuperMarket(mNameTextView = (TextView) findViewById(R.id.view_text_name));
         changeFontSuperMarket((TextView) findViewById(R.id.view_text_result_header));
         changeFontSuperMarket(mResultTextViewTH = (TextView) findViewById(R.id.view_text_result_th));
@@ -98,9 +101,13 @@ public class MainActivity extends AppCompatActivity {
         changeFontSuperMarket((Button) findViewById(R.id.button_retry));
         changeFontSuperMarket((Button) findViewById(R.id.button_share));
 
-
-        setUserProfile();
-        getResult();
+        mProgressDialog = Utilities.createProgressDialog("Generating Result...", MainActivity.this);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                mProgressDialog.dismiss();
+            }
+        }, 3000);
 
         mRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,15 +129,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        Bitmap bitmap1 = takeLayoutScreenshot((RelativeLayout) findViewById(R.id.layout_result_profile));
-        Bitmap bitmap2 = takeLayoutScreenshot((RelativeLayout) findViewById(R.id.layout_result_image));
+        Bitmap bitmap1 = Utilities.takeLayoutScreenshot((RelativeLayout) findViewById(R.id.layout_result_profile));
+        Bitmap bitmap2 = Utilities.takeLayoutScreenshot((RelativeLayout) findViewById(R.id.layout_result_image));
         Bitmap combine = combineImages(bitmap1, bitmap2);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         combine.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] image = stream.toByteArray();
         final ParseFile mFile = new ParseFile("ShareImage.png", image);
         mUploadSuccess = false;
-        do{
+        do {
             mFile.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -160,13 +167,11 @@ public class MainActivity extends AppCompatActivity {
                                                 mUploadSuccess = true;
                                             } else {
                                                 Log.e("Update:", "Failed");
-                                                mProgressDialog.dismiss();
                                             }
                                         }
                                     });
                                 } else {
                                     Log.e("Get ParseObject", "Failed");
-                                    mProgressDialog.dismiss();
                                 }
                             }
                         });
@@ -174,11 +179,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Upload result image:", "Failed");
                         Log.e("ERROR:", String.valueOf(e));
                         Toast.makeText(MainActivity.this, "Connection error. Please wait...", Toast.LENGTH_LONG).show();
-                        mProgressDialog.dismiss();
                     }
                 }
             });
-    }while(mUploadSuccess);}
+        } while (mUploadSuccess);
+    }
 
     private void changeLayoutSize() {
         mResultLayout = (LinearLayout) findViewById(R.id.layout_result);
@@ -188,9 +193,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onGlobalLayout() {
 
+                setUserProfile();
+                getResult();
+                final int defWidth = mResultLayout.getLayoutParams().width;
+                final int defHeight = mResultLayout.getLayoutParams().height;
                 double height = mResultLayout.getHeight() / 2;
                 mResultLayout.getLayoutParams().width = (int) (height * (1.911 / 2));
                 mResultLayout.requestLayout();
+                double imgHeight = mResultImage.getHeight();
+                mResultTextViewTH.getLayoutParams().height = (int) (imgHeight / 5);
+                mResultTextViewTH.requestLayout();
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
                     mResultLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 else
@@ -202,7 +214,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onGlobalLayout() {
                         uploadImage();
-                        mWaterMark.setVisibility(View.INVISIBLE);
+                        mResultLayout.getLayoutParams().width = defWidth;
+                        mResultLayout.getLayoutParams().height = defHeight;
+                        mResultLayout.requestLayout();
+                        mWaterMark1.setHeight(0);
+                        mWaterMark2.setHeight(0);
+                        mWaterMark1.setVisibility(View.INVISIBLE);
+                        mWaterMark2.setVisibility(View.INVISIBLE);
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
                             mResultLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         else
@@ -266,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
                 mProgressDialog.dismiss();
                 showAds();
                 Log.e("Share Result:", "Share Error");
+                Log.e("Share Result:", e.toString());
             }
         });
     }
@@ -300,28 +319,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public Bitmap takeLayoutScreenshot(RelativeLayout view) {
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
-        return view.getDrawingCache();
-    }
-
     private void getResult() {
         ArrayList<String> categories = new ArrayList<>();
-        String category = "null";
+        String category = "X";
         int n = 0;
         for (String s : mUserProfile.getCategory()) {
             categories.add(s.substring(0, 1));
         }
-        for (int i = 65; i <= 87; i++) {
+        for (int i = 65; i <= 88; i++) {
             int z = Collections.frequency(categories, Character.toString((char) i));
             if (z > n) {
                 n = z;
                 int total = i + point;
                 if (total < 65) {
-                    total = 87 - (64 - total);
+                    total = 88 - (64 - total);
                 } else if (total > 87) {
-                    total = (total - 88) + 65;
+                    total = (total - 89) + 65;
                 } else if (total == 81) {
                     if (point >= 0) {
                         total++;
@@ -335,8 +348,8 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences shared = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
-        String mDrawableName = shared.getString(category + "_" + IMAGE, "null_" + IMAGE);
-        int resID = getResources().getIdentifier(mDrawableName, "drawable", getPackageName());
+        String drawableName = shared.getString(category + "_" + IMAGE, "null_" + IMAGE);
+        int resID = getResources().getIdentifier(drawableName, "drawable", getPackageName());
 
         Log.e("Result :", shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
 

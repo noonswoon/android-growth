@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_above="@+id/image_button_profile"/>
+        />
 
     <Button
         android:layout_width="match_parent"
@@ -24,19 +24,24 @@
         android:background="@drawable/button_c_start"
         android:visibility="invisible"
         tools:visibility="visible"
-        android:layout_above="@+id/button_login"
-        android:layout_centerHorizontal="true"
-        android:textSize="25sp"/>
+        android:textSize="25sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"/>
 
     <view
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="com.facebook.login.widget.LoginButton"
         android:id="@+id/button_login"
-        android:layout_alignParentTop="false"
+        android:textSize="25sp"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:textSize="25sp"/>
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"/>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -47,24 +52,39 @@
         android:maxWidth="250dp"
         android:visibility="invisible"
         tools:visibility="visible"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
+        android:adjustViewBounds="true"
+        android:background="#00ffffff"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-70dp"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_edit_name"
-        android:hint="@string/login_edit_text_hint"
+        android:hint="กดเพื่อเปลี่ยนชื่อ"
+        android:maxLength="50"
         android:maxLines="1"
         android:gravity="center"
         android:visibility="invisible"
         tools:visibility="visible"
-        android:layout_below="@+id/image_button_profile"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:background="#80ffffff"
         android:textSize="30sp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"/>
+        android:layout_below="@+id/view_text_image_description"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="คลิกเพื่อเปลี่ยนรูป"
+        android:id="@+id/view_text_image_description"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_below="@+id/image_button_profile"
+        android:textColor="#ffffffff"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
 
 </RelativeLayout>

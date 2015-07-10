@@ -4,6 +4,8 @@ package com.noonswoonapp.moonswoon;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.widget.RelativeLayout;
 
 public class Utilities {
 
@@ -18,11 +20,19 @@ public class Utilities {
 
     public static ProgressDialog createProgressDialog(String Message, Context context) {
         ProgressDialog mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setMessage(Message);
+        mProgressDialog.setProgressNumberFormat(null);
+        mProgressDialog.setProgressPercentFormat(null);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
         return mProgressDialog;
+    }
+
+    public static Bitmap takeLayoutScreenshot(RelativeLayout view) {
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        return view.getDrawingCache();
     }
 }
