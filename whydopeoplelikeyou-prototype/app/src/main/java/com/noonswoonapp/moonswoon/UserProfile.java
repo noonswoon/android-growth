@@ -1,7 +1,6 @@
 package com.noonswoonapp.moonswoon;
 
 import android.app.Application;
-import android.net.Uri;
 
 import com.parse.Parse;
 
@@ -16,8 +15,9 @@ public class UserProfile extends Application{
     private ArrayList<String> mCategory;
     private JSONObject mUserProfile;
     private String mParseId;
-    private Uri mProfileImage;
+    private String mProfileImage;
     private String mUserName;
+    private Boolean mIsDefaultImage = true;
 
     @Override
     public void onCreate() {
@@ -51,11 +51,11 @@ public class UserProfile extends Application{
         mParseId = parseId;
     }
 
-    public Uri getProfileImage() {
+    public String getProfileImage() {
         return mProfileImage;
     }
 
-    public void setProfileImage(Uri profileImage) {
+    public void setProfileImage(String profileImage) {
         mProfileImage = profileImage;
     }
 
@@ -65,5 +65,13 @@ public class UserProfile extends Application{
 
     public void setUserName(String userName) {
         mUserName = userName;
+    }
+
+    public Boolean getIsDefaultImage() {
+        return mIsDefaultImage;
+    }
+
+    public void setIsDefaultImage(Boolean isDefaultImage) {
+        mIsDefaultImage = isDefaultImage;
     }
 }

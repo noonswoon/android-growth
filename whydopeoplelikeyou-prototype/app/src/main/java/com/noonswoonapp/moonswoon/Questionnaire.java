@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
@@ -27,6 +28,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private RadioButton mChoice2;
     private RadioButton mChoice3;
     private FrameLayout mLoading;
+    private RelativeLayout mAnswerLayout;
     private int question = 1;
     private int point = 0;
 
@@ -36,6 +38,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_questionaire);
 
         mQuestionImage = (ImageView) findViewById(R.id.view_image_question);
+        mAnswerLayout = (RelativeLayout) findViewById(R.id.layout_answer);
         changeFontSuperMarket(mQuestion = (TextView) findViewById(R.id.view_text_question));
         changeFontSuperMarket(mChoice1 = (RadioButton) findViewById(R.id.button_choice1));
         changeFontSuperMarket(mChoice2 = (RadioButton) findViewById(R.id.button_choice2));
@@ -80,17 +83,17 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
                 case R.id.button_choice1:
                     mChoice1.setChecked(false);
                     addPoint("0");
-                    loadActivity();
+                    checkQuestion();
                     break;
                 case R.id.button_choice2:
                     mChoice2.setChecked(false);
                     addPoint("1");
-                    loadActivity();
+                    checkQuestion();
                     break;
                 case R.id.button_choice3:
                     mChoice3.setChecked(false);
                     addPoint("2");
-                    loadActivity();
+                    checkQuestion();
                     break;
                 default:
                     Log.e("Error:", "Somethings gone wrong with buttons");
@@ -99,16 +102,24 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void loadActivity() {
+    private void checkQuestion() {
         if (question == TOTAL_QUESTION) {
-            mLoading.setVisibility(View.VISIBLE);
-            animatedCircleLoadingView.setVisibility(View.VISIBLE);
-            startPercentMockThread();
+            loadActivity();
         }
         if (question < TOTAL_QUESTION) {
             question++;
             loadQuestion();
         }
+    }
+
+    private void loadActivity() {
+        mLoading.setVisibility(View.VISIBLE);
+        animatedCircleLoadingView.setVisibility(View.VISIBLE);
+        for (int i = 0; i < mAnswerLayout.getChildCount(); i++) {
+            View child = mAnswerLayout.getChildAt(i);
+            child.setClickable(false);
+        }
+        startPercentMockThread();
     }
 
     private void startLoading() {

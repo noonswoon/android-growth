@@ -45,6 +45,7 @@ import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -362,7 +363,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUserProfile() {
         mNameTextView.setText(mUserProfile.getUserName());
-        Picasso.with(MainActivity.this).load(mUserProfile.getProfileImage()).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
+        if (!mUserProfile.getIsDefaultImage()) {
+            File f = new File(mUserProfile.getProfileImage());
+            Picasso.with(MainActivity.this).load(f).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
+        } else {
+            Picasso.with(MainActivity.this).load(mUserProfile.getProfileImage()).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
+        }
     }
 
     public class RoundedTransformation implements com.squareup.picasso.Transformation {

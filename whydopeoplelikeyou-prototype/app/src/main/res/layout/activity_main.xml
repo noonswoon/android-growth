@@ -33,48 +33,58 @@
                 android:id="@+id/layout_result_profile"
                 android:background="#ffb90235">
 
-                <com.noonswoonapp.moonswoon.AutoResizeTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/main_header"
-                    android:id="@+id/view_text_header_th"
-                    android:textSize="30sp"
-                    android:maxLines="2"
-                    android:textColor="#ffffffff"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="false"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center|center_vertical|center_horizontal"/>
-
-                <ImageView
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/image_profile"
-                    tools:src="@drawable/profile_default"
-                    android:layout_alignParentTop="false"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentLeft="false"
-                    android:layout_alignWithParentIfMissing="false"
-                    android:scaleType="fitCenter"
-                    android:layout_below="@+id/view_text_header_th"
-                    android:adjustViewBounds="false"
-                    android:layout_above="@+id/view_text_name"/>
+                    android:layout_above="@+id/view_text_watermark2">
 
-                <com.noonswoonapp.moonswoon.AutoResizeTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:id="@+id/view_text_name"
-                    tools:text="Your Name"
-                    android:gravity="center|center_vertical|center_horizontal"
-                    android:textSize="80sp"
-                    android:textColor="#ffffffff"
-                    android:maxLines="2"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_above="@+id/view_text_watermark2"
-                    android:layout_alignParentStart="false"/>
+                    <com.noonswoonapp.moonswoon.AutoResizeTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/main_header"
+                        android:id="@+id/view_text_header_th"
+                        android:textSize="80sp"
+                        android:maxLines="2"
+                        android:textColor="#ffffffff"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignParentStart="true"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:layout_weight="1.5"/>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/image_profile"
+                        tools:src="@drawable/profile_default"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignWithParentIfMissing="false"
+                        android:scaleType="fitCenter"
+                        android:layout_below="@+id/view_text_header_th"
+                        android:adjustViewBounds="false"
+                        android:layout_above="@+id/view_text_name"
+                        android:layout_weight="1"/>
+
+                    <com.noonswoonapp.moonswoon.AutoResizeTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/view_text_name"
+                        tools:text="Your Name\n สมญานาม"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:textSize="80sp"
+                        android:textColor="#ffffffff"
+                        android:maxLines="2"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_above="@+id/view_text_watermark2"
+                        android:layout_alignParentStart="false"
+                        android:layout_weight="1.5"/>
+                </LinearLayout>
 
 
                 <com.noonswoonapp.moonswoon.AutoResizeTextView

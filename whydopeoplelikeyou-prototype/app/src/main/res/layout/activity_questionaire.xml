@@ -2,105 +2,119 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="com.noonswoonapp.moonswoon.Questionnaire"
-                android:background="@drawable/bg">
+                android:background="@drawable/bg"
+                tools:context="com.noonswoonapp.moonswoon.Questionnaire">
 
     <ImageView
+        android:id="@+id/view_image_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/view_image_question"
-        tools:src="@drawable/question_1"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center_horizontal|top"
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
         android:maxHeight="250dp"
         android:maxWidth="250dp"
-        android:layout_marginTop="16dp"/>
+        tools:src="@drawable/question_1"/>
 
     <com.noonswoonapp.moonswoon.AutoResizeTextView
+        android:id="@+id/view_text_question"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        tools:text="Question"
-        android:id="@+id/view_text_question"
-        android:gravity="center|center_vertical|center_horizontal"
-        android:textSize="50sp"
-        android:maxLines="1"
-        android:textIsSelectable="false"
-        android:background="#00ffffff"
-        android:textColor="#FFFFFF"
         android:layout_alignParentStart="false"
         android:layout_below="@+id/view_image_question"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:background="#00ffffff"
+        android:gravity="center|center_vertical|center_horizontal"
+        android:maxLines="1"
+        android:textColor="#FFFFFF"
+        android:textIsSelectable="false"
+        android:textSize="50sp"
+        tools:text="Question"/>
 
     <RelativeLayout
+        android:id="@+id/layout_answer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffffff"
-        android:id="@+id/layout_answer"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/view_text_question"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp">
+        android:background="#ffffffff"
+        android:visibility="invisible">
 
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_choice1"
-            android:background="#FFFFFFFF"
-            android:layout_alignParentTop="true"
-            android:textSize="25sp"
-            style="@style/MyRadioButtonStyle"
-            android:checked="false"
-            tools:text="test1"/>
-
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_choice2"
-            android:background="#FFFFFFFF"
-            android:textSize="25sp"
-            style="@style/MyRadioButtonStyle"
-            android:layout_below="@+id/button_choice1"
-            android:layout_above="@+id/button_choice3"
-            tools:text="test2"/>
-
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_choice3"
-            android:background="#FFFFFFFF"
-            android:textSize="25sp"
-            style="@style/MyRadioButtonStyle"
-            android:layout_alignParentBottom="true"
-            tools:text="test3"/>
     </RelativeLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/view_text_question"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        android:background="#ffffffff">
+
+        <com.noonswoonapp.moonswoon.AutoResizeRadioButton
+            android:id="@+id/button_choice1"
+            style="@style/MyRadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFFFF"
+            android:maxLines="1"
+            android:textSize="80sp"
+            tools:text="test1"/>
+
+        <com.noonswoonapp.moonswoon.AutoResizeRadioButton
+            android:id="@+id/button_choice2"
+            style="@style/MyRadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFFFF"
+            android:maxLines="1"
+            android:textSize="80sp"
+            tools:text="test2"/>
+
+        <com.noonswoonapp.moonswoon.AutoResizeRadioButton
+            android:id="@+id/button_choice3"
+            style="@style/MyRadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFFFF"
+            android:maxLines="1"
+            android:textSize="80sp"
+            tools:text="test3"
+            />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_circle_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignLeft="@+id/view_image_question"
+        android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/view_image_question"
         android:background="#e6000000"
-        android:visibility="invisible"
-        android:id="@+id/layout_circle_loading">
+        android:visibility="invisible">
 
         <com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/circle_loading_view"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            app:mainColor="#ffb80434"
-            app:secondaryColor="#ffb80434"
-            android:layout_alignParentTop="false"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="false"
+            android:layout_alignParentTop="false"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:visibility="invisible"/>
+            android:layout_margin="15dp"
+            android:visibility="invisible"
+            app:mainColor="#ffb80434"
+            app:secondaryColor="#ffb80434"/>
     </FrameLayout>
 
 

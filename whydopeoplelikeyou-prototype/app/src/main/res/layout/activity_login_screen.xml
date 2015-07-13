@@ -14,7 +14,36 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        />
+        android:adjustViewBounds="true"/>
+
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        class="com.facebook.login.widget.LoginButton"
+        android:id="@+id/button_login"
+        android:textSize="25sp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_edit_name"
+        android:hint="กดเพื่อเปลี่ยนชื่อ"
+        android:maxLength="50"
+        android:maxLines="1"
+        android:gravity="center"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        android:background="#80ffffff"
+        android:textSize="30sp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/button_start"
+        android:layout_marginBottom="10dp"/>
 
     <Button
         android:layout_width="match_parent"
@@ -32,59 +61,51 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"/>
 
-    <view
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        class="com.facebook.login.widget.LoginButton"
-        android:id="@+id/button_login"
-        android:textSize="25sp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/image_button_profile"
-        android:src="@drawable/profile_default"
-        android:maxHeight="250dp"
-        android:maxWidth="250dp"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:adjustViewBounds="true"
-        android:background="#00ffffff"
+        android:layout_height="match_parent"
         android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-70dp"/>
+        android:layout_above="@+id/text_edit_name">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_edit_name"
-        android:hint="กดเพื่อเปลี่ยนชื่อ"
-        android:maxLength="50"
-        android:maxLines="1"
-        android:gravity="center"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:background="#80ffffff"
-        android:textSize="30sp"
-        android:layout_below="@+id/view_text_image_description"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/image_button_profile"
+            android:src="@drawable/profile_default"
+            android:maxHeight="250dp"
+            android:maxWidth="250dp"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            android:adjustViewBounds="false"
+            android:background="#00ffffff"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_alignParentLeft="false"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="คลิกเพื่อเปลี่ยนรูป"
-        android:id="@+id/view_text_image_description"
-        android:textSize="20dp"
-        android:gravity="center"
-        android:layout_below="@+id/image_button_profile"
-        android:textColor="#ffffffff"
-        android:visibility="invisible"
-        tools:visibility="visible"/>
+        <com.noonswoonapp.moonswoon.AutoResizeTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="คลิกเพื่อเปลี่ยนรูป"
+            android:id="@+id/view_text_image_description"
+            android:textSize="100sp"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:visibility="invisible"
+            android:maxLines="1"
+            tools:visibility="visible"
+            android:layout_alignRight="@+id/image_button_profile"
+            android:textIsSelectable="false"
+            android:layout_alignLeft="@+id/image_button_profile"
+            android:layout_weight="9"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/image_button_profile"
+            android:layout_alignParentBottom="true"/>
+    </LinearLayout>
 
 </RelativeLayout>

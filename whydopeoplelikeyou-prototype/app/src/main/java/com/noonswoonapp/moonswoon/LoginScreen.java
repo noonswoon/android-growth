@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -162,7 +163,7 @@ public class LoginScreen extends AppCompatActivity {
                             JSONObject data = picture.getJSONObject("data");
                             Log.e("JSON: ", data.getString("url"));
                             Log.e("JSON: ", "https://graph.facebook.com/" + object.getString("id") + "/picture?type=large");
-                            mUserProfile.setProfileImage(Uri.parse(data.getString("url")));
+                            mUserProfile.setProfileImage(data.getString("url"));
 
                             Picasso.with(LoginScreen.this).load(data.getString("url")).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
 
@@ -264,9 +265,11 @@ public class LoginScreen extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             Uri uri = data.getData();
-            Toast.makeText(LoginScreen.this,uri.toString(),Toast.LENGTH_LONG).show();
-            mUserProfile.setProfileImage(uri);
-            Picasso.with(LoginScreen.this).load(uri).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
+            String filePath = Utilities.getPath(LoginScreen.this, uri);
+            File f = new File(filePath);
+            mUserProfile.setProfileImage(filePath);
+            mUserProfile.setIsDefaultImage(false);
+            Picasso.with(LoginScreen.this).load(f).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
         }
     }
 
