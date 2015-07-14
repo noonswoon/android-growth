@@ -25,7 +25,6 @@ public class SplashScreen extends AppCompatActivity {
         createResultDB();
         createQuestionnaireDB();
         handler = new Handler();
-
         runnable = new Runnable() {
             public void run() {
                 Intent intent = new Intent(SplashScreen.this, LoginScreen.class);

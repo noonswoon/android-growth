@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 public class UserProfile extends Application{
 
-
     private ArrayList<String> mCategory;
     private JSONObject mUserProfile;
     private String mParseId;
@@ -74,4 +73,5 @@ public class UserProfile extends Application{
     public void setIsDefaultImage(Boolean isDefaultImage) {
         mIsDefaultImage = isDefaultImage;
     }
+
 }

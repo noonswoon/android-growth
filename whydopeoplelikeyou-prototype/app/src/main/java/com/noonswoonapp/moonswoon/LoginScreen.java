@@ -30,6 +30,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.parse.ParseException;
@@ -72,7 +73,6 @@ public class LoginScreen extends AppCompatActivity {
         mLoginButton = (LoginButton) findViewById(R.id.button_login);
         mProfileImage = (ImageButton) findViewById(R.id.image_button_profile);
         mName = (EditText) findViewById(R.id.text_edit_name);
-
         mName.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         mName.requestFocus();
 
@@ -148,41 +148,47 @@ public class LoginScreen extends AppCompatActivity {
                     public void onCompleted(
                             JSONObject object,
                             GraphResponse response) {
-                        ArrayList<String> category = new ArrayList<>();
-                        try {
-                            JSONObject likes = object.getJSONObject("likes");
-                            JSONArray data = likes.getJSONArray("data");
-                            for (int i = 0; !data.getJSONObject(i).getString("category").isEmpty(); i++) {
-                                category.add(data.getJSONObject(i).getString("category"));
+                        if (object != null) {
+                            ArrayList<String> category = new ArrayList<>();
+                            try {
+                                JSONObject likes = object.getJSONObject("likes");
+                                JSONArray data = likes.getJSONArray("data");
+                                for (int i = 0; !data.getJSONObject(i).getString("category").isEmpty(); i++) {
+                                    category.add(data.getJSONObject(i).getString("category"));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            try {
+                                JSONObject picture = object.getJSONObject("picture");
+                                JSONObject data = picture.getJSONObject("data");
+                                Log.e("JSON: ", data.getString("url"));
+                                Log.e("JSON: ", "https://graph.facebook.com/" + object.getString("id") + "/picture?type=large");
+                                mUserProfile.setProfileImage(data.getString("url"));
+
+                                Picasso.with(LoginScreen.this).load(data.getString("url")).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
+
+                                mName.setText(object.getString("first_name") + " " + object.getString("last_name"));
+                                mName.setSelection(mName.getText().length());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            mUserProfile.setUserProfile(object);
+                            mUserProfile.setCategory(category);
+                            mStartButton.setVisibility(View.VISIBLE);
+                            mProfileImage.setVisibility(View.VISIBLE);
+                            mName.setVisibility(View.VISIBLE);
+                            mImageDescr.setVisibility(View.VISIBLE);
+                            mProgressDialog.dismiss();
+                            sendUserProfile();
+                        } else {
+                            mProgressDialog.dismiss();
+                            LoginManager.getInstance().logOut();
+                            Toast.makeText(LoginScreen.this, "No internet connection. Please try again.", Toast.LENGTH_LONG).show();
+                            mLoginButton.setVisibility(View.VISIBLE);
                         }
-                        try {
-                            JSONObject picture = object.getJSONObject("picture");
-                            JSONObject data = picture.getJSONObject("data");
-                            Log.e("JSON: ", data.getString("url"));
-                            Log.e("JSON: ", "https://graph.facebook.com/" + object.getString("id") + "/picture?type=large");
-                            mUserProfile.setProfileImage(data.getString("url"));
-
-                            Picasso.with(LoginScreen.this).load(data.getString("url")).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
-
-                            mName.setText(object.getString("first_name") + " " + object.getString("last_name"));
-                            mName.setSelection(mName.getText().length());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        mUserProfile.setUserProfile(object);
-                        mUserProfile.setCategory(category);
-                        mStartButton.setVisibility(View.VISIBLE);
-                        mProfileImage.setVisibility(View.VISIBLE);
-                        mName.setVisibility(View.VISIBLE);
-                        mImageDescr.setVisibility(View.VISIBLE);
-                        mProgressDialog.dismiss();
-                        sendUserProfile();
                     }
-
                 }
 
         );

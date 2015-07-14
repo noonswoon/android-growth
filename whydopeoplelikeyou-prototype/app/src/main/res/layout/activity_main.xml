@@ -203,7 +203,7 @@
                 android:layout_weight="1"
                 android:enabled="false"
                 android:layout_marginLeft="2dp"
-                android:gravity="center"/>
+                />
 
 
         </LinearLayout>

@@ -1,7 +1,6 @@
 package com.noonswoonapp.moonswoon;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -36,6 +33,7 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -43,6 +41,10 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
+import com.supersonic.mediationsdk.logger.SupersonicError;
+import com.supersonic.mediationsdk.sdk.InterstitialListener;
+import com.supersonic.mediationsdk.sdk.Supersonic;
+import com.supersonic.mediationsdk.sdk.SupersonicFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,6 +54,7 @@ import java.util.Collections;
 public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
+    private final String TAG = getClass().getSimpleName();
     private static final String LANG_ENG = "0";
     private static final String LANG_THAI = "1";
     private static final String IMAGE = "2";
@@ -73,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean mUploadSuccess;
     private TextView mWaterMark1;
     private TextView mWaterMark2;
+    private Supersonic mMediationAgent;
+    private String mAppKey;
+    private boolean mIsRetry;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,8 +87,22 @@ public class MainActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         Intent intent = getIntent();
         point = intent.getIntExtra("point", 0);
+        mAppKey = "3ca70861";
 
         setContentView(R.layout.activity_main);
+        mMediationAgent = SupersonicFactory.getInstance();
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    mMediationAgent.setInterstitialListener(mInterstitialListener);
+                    mMediationAgent.initInterstitial(MainActivity.this, mAppKey, AdvertisingIdClient.getAdvertisingIdInfo(MainActivity.this).getId());
+                    Log.e("ClientID:", AdvertisingIdClient.getAdvertisingIdInfo(MainActivity.this).getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
         changeLayoutSize();
 
@@ -101,20 +121,18 @@ public class MainActivity extends AppCompatActivity {
         changeFontSuperMarket((Button) findViewById(R.id.button_retry));
         changeFontSuperMarket((Button) findViewById(R.id.button_share));
 
-//        mProgressDialog = Utilities.createProgressDialog("Generating Result...", MainActivity.this);
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                mProgressDialog.dismiss();
-//            }
-//        }, 3000);
 
         mRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SplashScreen.class);
-                startActivity(intent);
-                finish();
+                if (mMediationAgent.isInterstitialAdAvailable()) {
+                    mIsRetry = true;
+                    mMediationAgent.showInterstitial();
+                } else {
+                    Intent intent = new Intent(MainActivity.this, SplashScreen.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
@@ -127,6 +145,48 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    InterstitialListener mInterstitialListener = new InterstitialListener() {
+        @Override
+        public void onInterstitialInitSuccess() {
+            Log.d(TAG, "onInterstitialInitSuccess");
+        }
+
+        @Override
+        public void onInterstitialInitFail(SupersonicError supersonicError) {
+            Log.d(TAG, "onInterstitialInitFail : " + supersonicError.toString());
+        }
+
+        @Override
+        public void onInterstitialAvailability(boolean available) {
+            Log.d(TAG, "onInterstitialAvailability : " + available);
+        }
+
+        @Override
+        public void onInterstitialShowSuccess() {
+            Log.d(TAG, "onInterstitialShowSuccess");
+        }
+
+        @Override
+        public void onInterstitialShowFail(SupersonicError supersonicError) {
+            Log.d(TAG, "onInterstitialShowFail : " + supersonicError.toString());
+        }
+
+        @Override
+        public void onInterstitialAdClicked() {
+            Log.d(TAG, "onInterstitialAdClicked");
+        }
+
+        @Override
+        public void onInterstitialAdClosed() {
+            Log.d(TAG, "onInterstitialAdClosed");
+            if (mIsRetry) {
+                Intent intent = new Intent(MainActivity.this, SplashScreen.class);
+                startActivity(intent);
+                finish();
+            }
+        }
+    };
 
     private void uploadImage() {
         Bitmap bitmap1 = Utilities.takeLayoutScreenshot((RelativeLayout) findViewById(R.id.layout_result_profile));
@@ -262,62 +322,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void shareLinkContent() {
 
-
         mShareDialog.show(mShareLinkContent);
+        mProgressDialog.dismiss();
         mShareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                mProgressDialog.dismiss();
-//                showAds();
                 Log.e("Share Result:", "Share Success");
+                Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
+                if (mMediationAgent.isInterstitialAdAvailable()) {
+                    mMediationAgent.showInterstitial();
+                }
             }
 
             @Override
             public void onCancel() {
-                mProgressDialog.dismiss();
-//                showAds();
                 Log.e("Share Result:", "Share Cancel");
+                Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
+                if (mMediationAgent.isInterstitialAdAvailable()) {
+                    mMediationAgent.showInterstitial();
+                }
             }
 
             @Override
             public void onError(FacebookException e) {
-                mProgressDialog.dismiss();
-//                showAds();
                 Log.e("Share Result:", "Share Error");
                 Log.e("Share Result:", e.toString());
+                Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
+                if (mMediationAgent.isInterstitialAdAvailable()) {
+                    mMediationAgent.showInterstitial();
+                }
             }
         });
     }
-
-
-    private void showAds() {
-        final Dialog dialog = new Dialog(MainActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_noonswoon);
-
-        Button buttonDismiss = (Button) dialog.findViewById(R.id.button_dismiss);
-        ImageButton imageAds = (ImageButton) dialog.findViewById(R.id.image_ads);
-
-        buttonDismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        imageAds.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("market://details?id=com.android.chrome"));
-                startActivity(intent);
-                dialog.dismiss();
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
-
 
     private void getResult() {
         ArrayList<String> categories = new ArrayList<>();
@@ -418,4 +454,19 @@ public class MainActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mMediationAgent != null) {
+            mMediationAgent.onResume(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mMediationAgent != null) {
+            mMediationAgent.onPause(this);
+        }
+    }
 }

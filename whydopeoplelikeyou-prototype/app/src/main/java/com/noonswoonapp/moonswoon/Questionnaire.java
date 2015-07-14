@@ -115,10 +115,9 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private void loadActivity() {
         mLoading.setVisibility(View.VISIBLE);
         animatedCircleLoadingView.setVisibility(View.VISIBLE);
-        for (int i = 0; i < mAnswerLayout.getChildCount(); i++) {
-            View child = mAnswerLayout.getChildAt(i);
-            child.setClickable(false);
-        }
+        mChoice1.setClickable(false);
+        mChoice2.setClickable(false);
+        mChoice3.setClickable(false);
         startPercentMockThread();
     }
 

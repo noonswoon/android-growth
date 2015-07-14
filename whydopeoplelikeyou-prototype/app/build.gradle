@@ -20,13 +20,18 @@ android {
 }
 repositories {
     mavenCentral()
+    maven {
+        url "https://dl.bintray.com/supersonic/android-sdk"
+    }
 }
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.parse.bolts:bolts-android:1.2.0'
+    compile 'com.supersonic.sdk:mediationsdk:6.2.0'
     compile fileTree(dir: 'libs', include: 'Parse-*.jar')
     compile project (':library')
 }
