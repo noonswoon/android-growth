@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         class="com.facebook.login.widget.LoginButton"
         android:id="@+id/button_login"
-        android:textSize="25sp"
+        android:textSize="10dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="25dp"
@@ -38,28 +38,25 @@
         android:visibility="invisible"
         tools:visibility="visible"
         android:background="#80ffffff"
-        android:textSize="30sp"
+        android:textSize="15sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
         android:layout_above="@+id/button_start"
-        android:layout_marginBottom="10dp"/>
+        />
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:text="@string/login_start_button"
         android:id="@+id/button_start"
         android:background="@drawable/button_c_start"
         android:visibility="invisible"
         tools:visibility="visible"
-        android:textSize="25sp"
+        android:textSize="15sp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="15dp"/>
+        />
 
     <LinearLayout
         android:orientation="vertical"
@@ -101,7 +98,7 @@
             android:layout_alignRight="@+id/image_button_profile"
             android:textIsSelectable="false"
             android:layout_alignLeft="@+id/image_button_profile"
-            android:layout_weight="9"
+            android:layout_weight="5"
             android:layout_alignParentLeft="false"
             android:layout_alignParentTop="false"
             android:layout_below="@+id/image_button_profile"

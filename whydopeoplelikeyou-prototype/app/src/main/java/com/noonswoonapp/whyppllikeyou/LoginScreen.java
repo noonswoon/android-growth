@@ -1,4 +1,4 @@
-package com.noonswoonapp.moonswoon;
+package com.noonswoonapp.whyppllikeyou;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -33,6 +33,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.noonswoonapp.moonswoon.R;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;

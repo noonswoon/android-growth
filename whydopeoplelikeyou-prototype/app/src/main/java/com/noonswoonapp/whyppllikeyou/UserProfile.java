@@ -1,7 +1,10 @@
-package com.noonswoonapp.moonswoon;
+package com.noonswoonapp.whyppllikeyou;
 
 import android.app.Application;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
+import com.noonswoonapp.moonswoon.R;
 import com.parse.Parse;
 
 import org.json.JSONObject;
@@ -17,6 +20,9 @@ public class UserProfile extends Application{
     private String mProfileImage;
     private String mUserName;
     private Boolean mIsDefaultImage = true;
+    public static GoogleAnalytics analytics;
+    public static Tracker tracker;
+
 
     @Override
     public void onCreate() {
@@ -24,6 +30,13 @@ public class UserProfile extends Application{
 
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "P8e35p55tPX8GyU5dEb3trHVwCRnaujVipX3tImV", "sXGT77ZMWiNaWOcdLqzy9WCEORQSLCMfHlyNeYpa");
+        analytics = GoogleAnalytics.getInstance(this);
+        analytics.setLocalDispatchPeriod(1800);
+
+        tracker = analytics.newTracker(getString(R.string.google_analytic_tracker)); // Replace with actual tracker/property Id
+        tracker.enableExceptionReporting(true);
+        tracker.enableAdvertisingIdCollection(true);
+        tracker.enableAutoActivityTracking(true);
     }
 
     public JSONObject getUserProfile() {

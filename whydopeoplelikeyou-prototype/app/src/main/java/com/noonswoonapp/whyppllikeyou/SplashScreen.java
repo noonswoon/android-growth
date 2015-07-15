@@ -1,4 +1,4 @@
-package com.noonswoonapp.moonswoon;
+package com.noonswoonapp.whyppllikeyou;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
+
+import com.noonswoonapp.moonswoon.R;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 
 public class SplashScreen extends AppCompatActivity {
@@ -21,6 +25,7 @@ public class SplashScreen extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
         createResultDB();
         createQuestionnaireDB();

@@ -189,7 +189,7 @@
                 android:visibility="invisible"
                 tools:visibility="visible"
                 android:layout_marginRight="2dp"
-                android:textSize="20dp"/>
+                android:textSize="50dp"/>
 
             <view
                 android:layout_width="match_parent"
@@ -199,7 +199,7 @@
                 android:visibility="invisible"
                 tools:visibility="visible"
                 android:background="@drawable/button_c_share"
-                android:textSize="20dp"
+                android:textSize="50dp"
                 android:layout_weight="1"
                 android:enabled="false"
                 android:layout_marginLeft="2dp"

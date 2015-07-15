@@ -1,4 +1,4 @@
-package com.noonswoonapp.moonswoon;
+package com.noonswoonapp.whyppllikeyou;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -11,9 +11,9 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
-import android.widget.TextView;
+import android.widget.RadioButton;
 
-public class AutoResizeTextView extends TextView {
+public class AutoResizeRadioButton extends RadioButton {
     private interface SizeTester {
         /**
          *
@@ -52,17 +52,17 @@ public class AutoResizeTextView extends TextView {
     private boolean mEnableSizeCache = true;
     private boolean mInitiallized;
 
-    public AutoResizeTextView(Context context) {
+    public AutoResizeRadioButton(Context context) {
         super(context);
         initialize();
     }
 
-    public AutoResizeTextView(Context context, AttributeSet attrs) {
+    public AutoResizeRadioButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
     }
 
-    public AutoResizeTextView(Context context, AttributeSet attrs, int defStyle) {
+    public AutoResizeRadioButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initialize();
     }

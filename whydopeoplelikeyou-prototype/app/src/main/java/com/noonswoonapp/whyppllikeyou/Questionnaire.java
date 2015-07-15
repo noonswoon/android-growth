@@ -1,4 +1,4 @@
-package com.noonswoonapp.moonswoon;
+package com.noonswoonapp.whyppllikeyou;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +11,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
+import com.noonswoonapp.moonswoon.R;
 
 
 public class Questionnaire extends AppCompatActivity implements View.OnClickListener {
@@ -28,7 +28,6 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
     private RadioButton mChoice2;
     private RadioButton mChoice3;
     private FrameLayout mLoading;
-    private RelativeLayout mAnswerLayout;
     private int question = 1;
     private int point = 0;
 
@@ -38,7 +37,6 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_questionaire);
 
         mQuestionImage = (ImageView) findViewById(R.id.view_image_question);
-        mAnswerLayout = (RelativeLayout) findViewById(R.id.layout_answer);
         changeFontSuperMarket(mQuestion = (TextView) findViewById(R.id.view_text_question));
         changeFontSuperMarket(mChoice1 = (RadioButton) findViewById(R.id.button_choice1));
         changeFontSuperMarket(mChoice2 = (RadioButton) findViewById(R.id.button_choice2));
@@ -63,6 +61,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         mChoice1.setText(shared.getString("QC" + String.valueOf(question) + "_0", null));
         mChoice2.setText(shared.getString("QC" + String.valueOf(question) + "_1", null));
         mChoice3.setText(shared.getString("QC" + String.valueOf(question) + "_2", null));
+
     }
 
     private void addPoint(String choice) {

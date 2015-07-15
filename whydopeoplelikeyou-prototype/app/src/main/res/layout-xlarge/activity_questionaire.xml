@@ -23,7 +23,7 @@
     <com.noonswoonapp.whyppllikeyou.AutoResizeTextView
         android:id="@+id/view_text_question"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="#00ffffff"
         android:gravity="center|center_vertical|center_horizontal"
         android:maxLines="1"
@@ -31,51 +31,52 @@
         android:textIsSelectable="false"
         android:textSize="50sp"
         tools:text="Question"
-        android:layout_above="@+id/linearLayout3"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/linearLayout"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:orientation="vertical"
         android:background="#ffffffff"
         android:layout_alignParentBottom="true"
-        android:id="@+id/linearLayout3">
+        android:id="@+id/linearLayout">
 
-        <com.noonswoonapp.whyppllikeyou.AutoResizeRadioButton
+        <RadioButton
             android:id="@+id/button_choice1"
             style="@style/MyRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
-            android:maxLines="1"
-            android:textSize="80sp"
-            tools:text="test1"/>
+            android:textSize="70dp"
+            tools:text="เกือบทุกวัน บางวันก็ไม่ได้ออก"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="60dp"/>
 
-        <com.noonswoonapp.whyppllikeyou.AutoResizeRadioButton
+        <RadioButton
             android:id="@+id/button_choice2"
             style="@style/MyRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
-            android:maxLines="1"
-            android:textSize="80sp"
-            tools:text="test2"/>
+            android:textSize="70dp"
+            tools:text="test2"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="60dp"/>
 
-        <com.noonswoonapp.whyppllikeyou.AutoResizeRadioButton
+        <RadioButton
             android:id="@+id/button_choice3"
             style="@style/MyRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFFFF"
-            android:maxLines="1"
-            android:textSize="80sp"
+            android:textSize="70dp"
             tools:text="test3"
-            />
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="60dp"/>
     </LinearLayout>
 
     <FrameLayout
@@ -86,7 +87,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/view_image_question"
         android:background="#e6000000"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView
             android:id="@+id/circle_loading_view"

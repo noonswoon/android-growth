@@ -1,4 +1,4 @@
-package com.noonswoonapp.moonswoon;
+package com.noonswoonapp.whyppllikeyou;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -34,6 +34,7 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.noonswoonapp.moonswoon.R;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mWaterMark1;
     private TextView mWaterMark2;
     private Supersonic mMediationAgent;
-    private String mAppKey;
     private boolean mIsRetry;
 
     @Override
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         Intent intent = getIntent();
         point = intent.getIntExtra("point", 0);
-        mAppKey = "3ca70861";
 
         setContentView(R.layout.activity_main);
         mMediationAgent = SupersonicFactory.getInstance();
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     mMediationAgent.setInterstitialListener(mInterstitialListener);
-                    mMediationAgent.initInterstitial(MainActivity.this, mAppKey, AdvertisingIdClient.getAdvertisingIdInfo(MainActivity.this).getId());
+                    mMediationAgent.initInterstitial(MainActivity.this, getString(R.string.super_sonic_application_key), AdvertisingIdClient.getAdvertisingIdInfo(MainActivity.this).getId());
                     Log.e("ClientID:", AdvertisingIdClient.getAdvertisingIdInfo(MainActivity.this).getId());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -330,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Share Result:", "Share Success");
                 Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
                 if (mMediationAgent.isInterstitialAdAvailable()) {
+                    mMediationAgent = SupersonicFactory.getInstance();
                     mMediationAgent.showInterstitial();
                 }
             }
@@ -339,6 +339,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Share Result:", "Share Cancel");
                 Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
                 if (mMediationAgent.isInterstitialAdAvailable()) {
+                    mMediationAgent = SupersonicFactory.getInstance();
                     mMediationAgent.showInterstitial();
                 }
             }
@@ -349,6 +350,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Share Result:", e.toString());
                 Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
                 if (mMediationAgent.isInterstitialAdAvailable()) {
+                    mMediationAgent = SupersonicFactory.getInstance();
                     mMediationAgent.showInterstitial();
                 }
             }

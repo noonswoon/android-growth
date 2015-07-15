@@ -13,4 +13,6 @@
     <string name="login_edit_text_hint">Insert your name</string>
     <string name="login_start_button">เริ่มเลย!</string>
     <string name="title_activity_test">Test</string>
+    <string name="super_sonic_application_key">3cb20b69</string>
+    <string name="google_analytic_tracker">UA-64903227-1</string>
 </resources>
