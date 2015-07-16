@@ -33,19 +33,15 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.noonswoonapp.moonswoon.R;
+import com.google.android.gms.analytics.HitBuilders;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.purplebrain.adbuddiz.sdk.AdBuddiz;
 import com.squareup.picasso.Picasso;
-import com.supersonic.mediationsdk.logger.SupersonicError;
-import com.supersonic.mediationsdk.sdk.InterstitialListener;
-import com.supersonic.mediationsdk.sdk.Supersonic;
-import com.supersonic.mediationsdk.sdk.SupersonicFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -77,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean mUploadSuccess;
     private TextView mWaterMark1;
     private TextView mWaterMark2;
-    private Supersonic mMediationAgent;
     private boolean mIsRetry;
 
     @Override
@@ -89,20 +84,6 @@ public class MainActivity extends AppCompatActivity {
         point = intent.getIntExtra("point", 0);
 
         setContentView(R.layout.activity_main);
-        mMediationAgent = SupersonicFactory.getInstance();
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    mMediationAgent.setInterstitialListener(mInterstitialListener);
-                    mMediationAgent.initInterstitial(MainActivity.this, getString(R.string.super_sonic_application_key), AdvertisingIdClient.getAdvertisingIdInfo(MainActivity.this).getId());
-                    Log.e("ClientID:", AdvertisingIdClient.getAdvertisingIdInfo(MainActivity.this).getId());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
         changeLayoutSize();
 
         mUserProfile = (UserProfile) getApplication();
@@ -113,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         mShareDialog = new ShareDialog(MainActivity.this);
         mWaterMark1 = (TextView) findViewById(R.id.view_text_watermark1);
         mWaterMark2 = (TextView) findViewById(R.id.view_text_watermark2);
+
         changeFontSuperMarket(mNameTextView = (TextView) findViewById(R.id.view_text_name));
         changeFontSuperMarket((TextView) findViewById(R.id.view_text_result_header));
         changeFontSuperMarket(mResultTextViewTH = (TextView) findViewById(R.id.view_text_result_th));
@@ -120,24 +102,39 @@ public class MainActivity extends AppCompatActivity {
         changeFontSuperMarket((Button) findViewById(R.id.button_retry));
         changeFontSuperMarket((Button) findViewById(R.id.button_share));
 
-
         mRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mMediationAgent.isInterstitialAdAvailable()) {
+                UserProfile.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
+                        .setAction("Click")
+                        .setLabel("Retry")
+                        .build());
+                if (AdBuddiz.isReadyToShowAd(MainActivity.this)){
                     mIsRetry = true;
-                    mMediationAgent.showInterstitial();
+                    AdBuddiz.showAd(MainActivity.this);
                 } else {
                     Intent intent = new Intent(MainActivity.this, SplashScreen.class);
                     startActivity(intent);
                     finish();
                 }
+
             }
         });
 
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseConstant.CLASS_USER_PROFILE);
+                query.getInBackground(mUserProfile.getParseId(), new GetCallback<ParseObject>() {
+                            @Override
+                            public void done(ParseObject parseObject, ParseException e) {
+                                parseObject.put(ParseConstant.KEY_CLICKED_SHARE, true);
+                            }
+                        });
+                        UserProfile.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
+                                .setAction("Click")
+                                .setLabel("Share")
+                                .build());
                 mProgressDialog = Utilities.createProgressDialog("Sharing Image...", MainActivity.this);
                 shareLinkContent();
             }
@@ -145,47 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    InterstitialListener mInterstitialListener = new InterstitialListener() {
-        @Override
-        public void onInterstitialInitSuccess() {
-            Log.d(TAG, "onInterstitialInitSuccess");
-        }
-
-        @Override
-        public void onInterstitialInitFail(SupersonicError supersonicError) {
-            Log.d(TAG, "onInterstitialInitFail : " + supersonicError.toString());
-        }
-
-        @Override
-        public void onInterstitialAvailability(boolean available) {
-            Log.d(TAG, "onInterstitialAvailability : " + available);
-        }
-
-        @Override
-        public void onInterstitialShowSuccess() {
-            Log.d(TAG, "onInterstitialShowSuccess");
-        }
-
-        @Override
-        public void onInterstitialShowFail(SupersonicError supersonicError) {
-            Log.d(TAG, "onInterstitialShowFail : " + supersonicError.toString());
-        }
-
-        @Override
-        public void onInterstitialAdClicked() {
-            Log.d(TAG, "onInterstitialAdClicked");
-        }
-
-        @Override
-        public void onInterstitialAdClosed() {
-            Log.d(TAG, "onInterstitialAdClosed");
-            if (mIsRetry) {
-                Intent intent = new Intent(MainActivity.this, SplashScreen.class);
-                startActivity(intent);
-                finish();
-            }
-        }
-    };
 
     private void uploadImage() {
         Bitmap bitmap1 = Utilities.takeLayoutScreenshot((RelativeLayout) findViewById(R.id.layout_result_profile));
@@ -194,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         combine.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] image = stream.toByteArray();
-        final ParseFile mFile = new ParseFile("ShareImage.png", image);
+        final ParseFile mFile = new ParseFile("UserGeneratedResult.png", image);
         mUploadSuccess = false;
         do {
             mFile.saveInBackground(new SaveCallback() {
@@ -327,32 +283,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Sharer.Result result) {
                 Log.e("Share Result:", "Share Success");
-                Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
-                if (mMediationAgent.isInterstitialAdAvailable()) {
-                    mMediationAgent = SupersonicFactory.getInstance();
-                    mMediationAgent.showInterstitial();
-                }
+                AdBuddiz.showAd(MainActivity.this);
             }
 
             @Override
             public void onCancel() {
                 Log.e("Share Result:", "Share Cancel");
-                Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
-                if (mMediationAgent.isInterstitialAdAvailable()) {
-                    mMediationAgent = SupersonicFactory.getInstance();
-                    mMediationAgent.showInterstitial();
-                }
+                AdBuddiz.showAd(MainActivity.this);
             }
 
             @Override
             public void onError(FacebookException e) {
                 Log.e("Share Result:", "Share Error");
                 Log.e("Share Result:", e.toString());
-                Log.e("TAG", String.valueOf(mMediationAgent.isInterstitialAdAvailable()));
-                if (mMediationAgent.isInterstitialAdAvailable()) {
-                    mMediationAgent = SupersonicFactory.getInstance();
-                    mMediationAgent.showInterstitial();
-                }
+                AdBuddiz.showAd(MainActivity.this);
             }
         });
     }
@@ -459,16 +403,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mMediationAgent != null) {
-            mMediationAgent.onResume(this);
+        if (mIsRetry) {
+            Intent intent = new Intent(MainActivity.this, SplashScreen.class);
+            startActivity(intent);
+            finish();
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mMediationAgent != null) {
-            mMediationAgent.onPause(this);
-        }
-    }
 }

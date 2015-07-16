@@ -15,7 +15,7 @@ android {
     compileOptions.encoding = 'UTF-8'
 
     defaultConfig {
-        applicationId "com.noonswoonapp.moonswoon"
+        applicationId "com.noonswoonapp.whyppllikeyou"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
@@ -42,7 +42,6 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.parse.bolts:bolts-android:1.2.0'
-    compile 'com.supersonic.sdk:mediationsdk:6.2.0'
     compile fileTree(dir: 'libs', include: 'Parse-*.jar')
     compile project (':library')
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {

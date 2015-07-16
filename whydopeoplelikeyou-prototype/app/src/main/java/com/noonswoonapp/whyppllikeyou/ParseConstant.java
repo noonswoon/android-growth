@@ -2,11 +2,12 @@ package com.noonswoonapp.whyppllikeyou;
 
 public final class ParseConstant {
     // Class Name
-    public static final String CLASS_USER_PROFILE = "UserProfile";
+    public static final String CLASS_USER_PROFILE = "UserLogged";
     // Fields Name
-    public static final String KEY_FIRST_NAME = "FirstName";
-    public static final String KEY_LAST_NAME = "LastName";
-    public static final String KEY_EMAIL = "Email";
-    public static final String KEY_BIRTH_DATE = "BirthDate";
-    public static final String KEY_IMAGE_FILE = "ImageFile";
+    public static final String KEY_FIRST_NAME = "first_name";
+    public static final String KEY_LAST_NAME = "last_name";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_BIRTH_DATE = "birthday";
+    public static final String KEY_IMAGE_FILE = "imageFile";
+    public static final String KEY_CLICKED_SHARE = "clickedShare";
 }

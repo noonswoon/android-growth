@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_edit_name"
-        android:hint="กดเพื่อเปลี่ยนชื่อ"
+        android:hint="@string/text_edit_name_hint"
         android:maxLength="50"
         android:maxLines="1"
         android:gravity="center"

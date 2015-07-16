@@ -33,7 +33,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.noonswoonapp.moonswoon.R;
+import com.google.android.gms.analytics.HitBuilders;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
@@ -82,6 +82,10 @@ public class LoginScreen extends AppCompatActivity {
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserProfile.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
+                        .setAction("Click")
+                        .setLabel("Start")
+                        .build());
                 Intent intent = new Intent(LoginScreen.this, Questionnaire.class);
                 startActivity(intent);
                 mUserProfile.setUserName(mName.getText().toString());

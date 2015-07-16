@@ -14,7 +14,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
-import com.noonswoonapp.moonswoon.R;
 
 
 public class Questionnaire extends AppCompatActivity implements View.OnClickListener {

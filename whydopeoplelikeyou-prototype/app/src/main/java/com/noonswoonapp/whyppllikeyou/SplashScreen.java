@@ -8,8 +8,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
-import com.noonswoonapp.moonswoon.R;
 import com.crashlytics.android.Crashlytics;
+import com.purplebrain.adbuddiz.sdk.AdBuddiz;
+
 import io.fabric.sdk.android.Fabric;
 
 
@@ -23,6 +24,9 @@ public class SplashScreen extends AppCompatActivity {
     private static final String QUESTION_PREFS = "question_db";
 
     public void onCreate(Bundle savedInstanceState) {
+        AdBuddiz.setPublisherKey("5b6b0a2b-766f-4dc3-8fdb-a2e33de05a3e");
+        AdBuddiz.cacheAds(this);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
@@ -37,6 +41,7 @@ public class SplashScreen extends AppCompatActivity {
                 finish();
             }
         };
+
     }
 
     public void onResume() {
