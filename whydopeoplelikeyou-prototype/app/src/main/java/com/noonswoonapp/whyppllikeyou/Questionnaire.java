@@ -18,6 +18,7 @@ import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
 
 public class Questionnaire extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = Questionnaire.class.getSimpleName();
     private AnimatedCircleLoadingView animatedCircleLoadingView;
     private static final String PREFS = "question_db";
     private static final int TOTAL_QUESTION = 5;
@@ -35,6 +36,13 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionaire);
 
+        initUIElements();
+        loadQuestion();
+        initLoadingScreen();
+
+    }
+
+    private void initUIElements() {
         mQuestionImage = (ImageView) findViewById(R.id.view_image_question);
         changeFontSuperMarket(mQuestion = (TextView) findViewById(R.id.view_text_question));
         changeFontSuperMarket(mChoice1 = (RadioButton) findViewById(R.id.button_choice1));
@@ -42,9 +50,6 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         changeFontSuperMarket(mChoice3 = (RadioButton) findViewById(R.id.button_choice3));
         animatedCircleLoadingView = (AnimatedCircleLoadingView) findViewById(R.id.circle_loading_view);
         mLoading = (FrameLayout) findViewById(R.id.layout_circle_loading);
-        loadQuestion();
-        startLoading();
-
         mChoice1.setOnClickListener(this);
         mChoice2.setOnClickListener(this);
         mChoice3.setOnClickListener(this);
@@ -94,7 +99,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
                     checkQuestion();
                     break;
                 default:
-                    Log.e("Error:", "Somethings gone wrong with buttons");
+                    Log.e(TAG, "Error : Somethings gone wrong with buttons");
                     break;
             }
         }
@@ -119,7 +124,7 @@ public class Questionnaire extends AppCompatActivity implements View.OnClickList
         startPercentMockThread();
     }
 
-    private void startLoading() {
+    private void initLoadingScreen() {
         animatedCircleLoadingView.startDeterminate();
     }
 

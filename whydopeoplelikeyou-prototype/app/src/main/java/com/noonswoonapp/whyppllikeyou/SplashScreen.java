@@ -24,7 +24,7 @@ public class SplashScreen extends AppCompatActivity {
     private static final String QUESTION_PREFS = "question_db";
 
     public void onCreate(Bundle savedInstanceState) {
-        AdBuddiz.setPublisherKey("5b6b0a2b-766f-4dc3-8fdb-a2e33de05a3e");
+        AdBuddiz.setPublisherKey(getString(R.string.adbuddiz_publisherkey));
         AdBuddiz.cacheAds(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);

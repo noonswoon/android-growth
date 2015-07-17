@@ -10,4 +10,5 @@ public final class ParseConstant {
     public static final String KEY_BIRTH_DATE = "birthday";
     public static final String KEY_IMAGE_FILE = "imageFile";
     public static final String KEY_CLICKED_SHARE = "clickedShare";
+    public static final String KEY_ID = "userId";
 }

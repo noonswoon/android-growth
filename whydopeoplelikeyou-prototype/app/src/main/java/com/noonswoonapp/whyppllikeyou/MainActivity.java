@@ -41,6 +41,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.purplebrain.adbuddiz.sdk.AdBuddiz;
+import com.purplebrain.adbuddiz.sdk.AdBuddizDelegate;
+import com.purplebrain.adbuddiz.sdk.AdBuddizError;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -50,14 +52,14 @@ import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ProgressDialog mProgressDialog;
-    private final String TAG = getClass().getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String LANG_ENG = "0";
     private static final String LANG_THAI = "1";
     private static final String IMAGE = "2";
     private static final String ALIAS = "3";
     private static final String PREFS = "result_db";
-    private UserProfile mUserProfile;
+    private ProgressDialog mProgressDialog;
+    private MyApplication mMyApplication;
     private CallbackManager callbackManager;
     private TextView mResultTextViewTH;
     private ImageView mProfileImage;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mWaterMark1;
     private TextView mWaterMark2;
     private boolean mIsRetry;
+    private boolean mIsShare = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,8 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         changeLayoutSize();
+        initUIElements();
+    }
 
-        mUserProfile = (UserProfile) getApplication();
+    private void initUIElements() {
+        mMyApplication = (MyApplication) getApplication();
         mShareButton = (ShareButton) findViewById(R.id.button_share);
         mProfileImage = (ImageView) findViewById(R.id.image_profile);
         mResultImage = (ImageView) findViewById(R.id.image_result);
@@ -102,14 +108,40 @@ public class MainActivity extends AppCompatActivity {
         changeFontSuperMarket((Button) findViewById(R.id.button_retry));
         changeFontSuperMarket((Button) findViewById(R.id.button_share));
 
+        AdBuddiz.setDelegate(new AdBuddizDelegate() {
+            @Override
+            public void didCacheAd() {
+            }
+
+            @Override
+            public void didShowAd() {
+            }
+
+            @Override
+            public void didFailToShowAd(AdBuddizError error) {
+            }
+
+            @Override
+            public void didClick() {
+                MyApplication.tracker().send(new HitBuilders.EventBuilder().setCategory("Ads")
+                        .setAction("Click")
+                        .setLabel("didClick")
+                        .build());
+            }
+
+            @Override
+            public void didHideAd() {
+            }
+        });
+
         mRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserProfile.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
+                MyApplication.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
                         .setAction("Click")
                         .setLabel("Retry")
                         .build());
-                if (AdBuddiz.isReadyToShowAd(MainActivity.this)){
+                if (AdBuddiz.isReadyToShowAd(MainActivity.this) && mIsShare) {
                     mIsRetry = true;
                     AdBuddiz.showAd(MainActivity.this);
                 } else {
@@ -124,22 +156,22 @@ public class MainActivity extends AppCompatActivity {
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mIsShare = false;
                 ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseConstant.CLASS_USER_PROFILE);
-                query.getInBackground(mUserProfile.getParseId(), new GetCallback<ParseObject>() {
-                            @Override
-                            public void done(ParseObject parseObject, ParseException e) {
-                                parseObject.put(ParseConstant.KEY_CLICKED_SHARE, true);
-                            }
-                        });
-                        UserProfile.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
-                                .setAction("Click")
-                                .setLabel("Share")
-                                .build());
+                query.getInBackground(mMyApplication.getParseId(), new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        parseObject.put(ParseConstant.KEY_CLICKED_SHARE, true);
+                    }
+                });
+                MyApplication.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
+                        .setAction("Click")
+                        .setLabel("Share")
+                        .build());
                 mProgressDialog = Utilities.createProgressDialog("Sharing Image...", MainActivity.this);
                 shareLinkContent();
             }
         });
-
     }
 
 
@@ -157,21 +189,21 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        Log.e("Upload result image:", "Success");
+                        Log.v(TAG, "Upload result image: Success");
                         mImageUrl = mFile.getUrl();
                         ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseConstant.CLASS_USER_PROFILE);
-                        query.getInBackground(mUserProfile.getParseId(), new GetCallback<ParseObject>() {
+                        query.getInBackground(mMyApplication.getParseId(), new GetCallback<ParseObject>() {
                             @Override
                             public void done(ParseObject parseObject, ParseException e) {
                                 if (e == null) {
-                                    Log.e("Get ParseObject", "Success");
+                                    Log.v(TAG, "Get ParseObject : Success");
 
                                     parseObject.put(ParseConstant.KEY_IMAGE_FILE, mFile);
                                     parseObject.saveInBackground(new SaveCallback() {
                                         @Override
                                         public void done(ParseException e) {
                                             if (e == null) {
-                                                Log.e("Update:", "Success");
+                                                Log.v(TAG, "Update : Success");
                                                 mShareLinkContent = new ShareLinkContent.Builder()
                                                         .setContentDescription("คลิกที่นี่ เพื่อลองค้นหาเหตุผลที่ทำไมคนถึงชอบคุณดูสิ")
                                                         .setContentTitle("เหตุผลที่ทำไมคนถึงชอบคุณ")
@@ -181,18 +213,18 @@ public class MainActivity extends AppCompatActivity {
                                                 mShareButton.setEnabled(true);
                                                 mUploadSuccess = true;
                                             } else {
-                                                Log.e("Update:", "Failed");
+                                                Log.e(TAG, "Update : Failed");
                                             }
                                         }
                                     });
                                 } else {
-                                    Log.e("Get ParseObject", "Failed");
+                                    Log.e(TAG, "Get ParseObject : Failed");
                                 }
                             }
                         });
                     } else {
-                        Log.e("Upload result image:", "Failed");
-                        Log.e("ERROR:", String.valueOf(e));
+                        Log.e(TAG, "Upload result image : Failed");
+                        Log.e(TAG, "ERROR:" + String.valueOf(e));
                         Toast.makeText(MainActivity.this, "Connection error. Please wait...", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -247,9 +279,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Bitmap combineImages(Bitmap c, Bitmap s) {
-        Bitmap cs = null;
+        Bitmap cs;
 
-        int width, height = 0;
+        int width, height;
 
         if (c.getWidth() > s.getWidth()) {
             width = c.getWidth() + s.getWidth();
@@ -269,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
         return cs;
     }
 
-
     private void changeFontSuperMarket(TextView textView) {
         Typeface font = Typeface.createFromAsset(getAssets(), "font/supermarket.ttf");
         textView.setTypeface(font);
@@ -282,20 +313,20 @@ public class MainActivity extends AppCompatActivity {
         mShareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                Log.e("Share Result:", "Share Success");
+                Log.v(TAG, "Share Result : Share Success");
                 AdBuddiz.showAd(MainActivity.this);
             }
 
             @Override
             public void onCancel() {
-                Log.e("Share Result:", "Share Cancel");
+                Log.v(TAG, "Share Result : Share Cancel");
                 AdBuddiz.showAd(MainActivity.this);
             }
 
             @Override
             public void onError(FacebookException e) {
-                Log.e("Share Result:", "Share Error");
-                Log.e("Share Result:", e.toString());
+                Log.e(TAG, "Share Result: Share Error");
+                Log.e(TAG, "Share Result:" + e.toString());
                 AdBuddiz.showAd(MainActivity.this);
             }
         });
@@ -305,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> categories = new ArrayList<>();
         String category = "X";
         int n = 0;
-        for (String s : mUserProfile.getCategory()) {
+        for (String s : mMyApplication.getCategory()) {
             categories.add(s.substring(0, 1));
         }
         for (int i = 65; i <= 88; i++) {
@@ -333,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
         String drawableName = shared.getString(category + "_" + IMAGE, "null_" + IMAGE);
         int resID = getResources().getIdentifier(drawableName, "drawable", getPackageName());
 
-        Log.e("Result :", shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
+        Log.i("Result :", shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
 
         mResultTextViewTH.setText(shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
         mResultImage.setImageResource(resID);
@@ -344,12 +375,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUserProfile() {
-        mNameTextView.setText(mUserProfile.getUserName());
-        if (!mUserProfile.getIsDefaultImage()) {
-            File f = new File(mUserProfile.getProfileImage());
+        mNameTextView.setText(mMyApplication.getUserName());
+        if (!mMyApplication.getIsDefaultImage()) {
+            File f = new File(mMyApplication.getProfileImage());
             Picasso.with(MainActivity.this).load(f).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
         } else {
-            Picasso.with(MainActivity.this).load(mUserProfile.getProfileImage()).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
+            Picasso.with(MainActivity.this).load(mMyApplication.getProfileImage()).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
         }
     }
 

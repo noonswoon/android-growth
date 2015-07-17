@@ -35,7 +35,9 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.analytics.HitBuilders;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 
@@ -49,12 +51,13 @@ import java.util.ArrayList;
 
 public class LoginScreen extends AppCompatActivity {
 
+    private static final String TAG = LoginScreen.class.getSimpleName();
     private int PICK_IMAGE_REQUEST = 1;
     private Button mStartButton;
     private LoginButton mLoginButton;
     private EditText mName;
     private CallbackManager callbackManager;
-    private UserProfile mUserProfile;
+    private MyApplication mMyApplication;
     private Boolean mLoggedIn = false;
     private ImageButton mProfileImage;
     private ProgressDialog mProgressDialog;
@@ -67,9 +70,12 @@ public class LoginScreen extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         setContentView(R.layout.activity_login_screen);
+        initUIElements();
+    }
 
+    private void initUIElements() {
         mImageDescr = (TextView) findViewById(R.id.view_text_image_description);
-        mUserProfile = (UserProfile) getApplication();
+        mMyApplication = (MyApplication) getApplication();
         mStartButton = (Button) findViewById(R.id.button_start);
         mLoginButton = (LoginButton) findViewById(R.id.button_login);
         mProfileImage = (ImageButton) findViewById(R.id.image_button_profile);
@@ -82,13 +88,13 @@ public class LoginScreen extends AppCompatActivity {
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserProfile.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
+                MyApplication.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
                         .setAction("Click")
                         .setLabel("Start")
                         .build());
                 Intent intent = new Intent(LoginScreen.this, Questionnaire.class);
                 startActivity(intent);
-                mUserProfile.setUserName(mName.getText().toString());
+                mMyApplication.setUserName(mName.getText().toString());
                 finish();
             }
         });
@@ -117,6 +123,15 @@ public class LoginScreen extends AppCompatActivity {
             }
         };
 
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyApplication.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
+                        .setAction("Click")
+                        .setLabel("Login")
+                        .build());
+            }
+        });
         mLoginButton.setReadPermissions("public_profile, email, user_likes, user_photos, user_birthday, email");
         mLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -125,23 +140,21 @@ public class LoginScreen extends AppCompatActivity {
                 mLoginButton.setVisibility(View.INVISIBLE);
                 accessTokenTracker.startTracking();
                 getUserProfile();
-                Log.e("Login Result:", "Success");
+                Log.i(TAG, "Login Success");
             }
 
             @Override
             public void onCancel() {
-                Log.e("Login Result:", "Cancel");
+                Log.i(TAG, "Login Cancel");
             }
 
             @Override
             public void onError(FacebookException exception) {
-                Log.e("Login Result:", "Error");
+                Log.e(TAG, "Login Error");
                 Toast.makeText(LoginScreen.this, "Login Error. Please try again.", Toast.LENGTH_LONG).show();
             }
         });
     }
-
-
 
     private void getUserProfile() {
         mProgressDialog = Utilities.createProgressDialog("Retrieving user profile...", LoginScreen.this);
@@ -167,9 +180,9 @@ public class LoginScreen extends AppCompatActivity {
                             try {
                                 JSONObject picture = object.getJSONObject("picture");
                                 JSONObject data = picture.getJSONObject("data");
-                                Log.e("JSON: ", data.getString("url"));
-                                Log.e("JSON: ", "https://graph.facebook.com/" + object.getString("id") + "/picture?type=large");
-                                mUserProfile.setProfileImage(data.getString("url"));
+                                Log.v(TAG, "JSON" + data.getString("url"));
+                                Log.v(TAG, "JSON" + "https://graph.facebook.com/" + object.getString("id") + "/picture?type=large");
+                                mMyApplication.setProfileImage(data.getString("url"));
 
                                 Picasso.with(LoginScreen.this).load(data.getString("url")).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
 
@@ -179,8 +192,8 @@ public class LoginScreen extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            mUserProfile.setUserProfile(object);
-                            mUserProfile.setCategory(category);
+                            mMyApplication.setUserProfile(object);
+                            mMyApplication.setCategory(category);
                             mStartButton.setVisibility(View.VISIBLE);
                             mProfileImage.setVisibility(View.VISIBLE);
                             mName.setVisibility(View.VISIBLE);
@@ -198,19 +211,24 @@ public class LoginScreen extends AppCompatActivity {
 
         );
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name,last_name, picture.width(230).height(230), likes.limit(100), birthday, email");
+        parameters.putString("fields", "id, first_name,last_name, picture.width(230).height(230), likes.limit(100), birthday, email, gender");
         request.setParameters(parameters);
         request.executeAsync();
     }
 
     private void sendUserProfile() {
         final ParseObject mUser = new ParseObject(ParseConstant.CLASS_USER_PROFILE);
-        JSONObject profile = mUserProfile.getUserProfile();
+        JSONObject profile = mMyApplication.getUserProfile();
         try {
             mUser.put(ParseConstant.KEY_FIRST_NAME, profile.getString("first_name"));
             mUser.put(ParseConstant.KEY_LAST_NAME, profile.getString("last_name"));
             mUser.put(ParseConstant.KEY_EMAIL, profile.getString("email"));
             mUser.put(ParseConstant.KEY_BIRTH_DATE, profile.getString("birthday"));
+            mUser.put(ParseConstant.KEY_ID, profile.getString("id"));
+            if (ParseInstallation.getCurrentInstallation().getList("channels")
+                    == null) {
+                parseSubscribe(profile.getString("gender"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -219,10 +237,24 @@ public class LoginScreen extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Log.e("Send user profile:", "Success");
-                    mUserProfile.setParseId(mUser.getObjectId());
+                    Log.v(TAG, "Send user profile Success");
+                    mMyApplication.setParseId(mUser.getObjectId());
+
                 } else {
-                    Log.e("Send user profile:", "Failed");
+                    Log.e(TAG, "Send user profile Failed");
+                }
+            }
+        });
+    }
+
+    private void parseSubscribe(final String channel) {
+        ParsePush.subscribeInBackground(channel, new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.v(TAG, "Parse : successfully subscribed to the " + channel + " channel.");
+                } else {
+                    Log.e(TAG, "Parse : failed to subscribe for push", e);
                 }
             }
         });
@@ -278,8 +310,8 @@ public class LoginScreen extends AppCompatActivity {
             Uri uri = data.getData();
             String filePath = Utilities.getPath(LoginScreen.this, uri);
             File f = new File(filePath);
-            mUserProfile.setProfileImage(filePath);
-            mUserProfile.setIsDefaultImage(false);
+            mMyApplication.setProfileImage(filePath);
+            mMyApplication.setIsDefaultImage(false);
             Picasso.with(LoginScreen.this).load(f).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
         }
     }
@@ -305,7 +337,6 @@ public class LoginScreen extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
     }
-
 
     @Override
     protected void onStop() {
