@@ -58,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String IMAGE = "2";
     private static final String ALIAS = "3";
     private static final String PREFS = "result_db";
+    private static final int ASCII_A = 65;
+    private static final int ASCII_Q = 81;
+    private static final int ASCII_Z = 88;
     private ProgressDialog mProgressDialog;
     private MyApplication mMyApplication;
     private CallbackManager callbackManager;
@@ -339,16 +342,16 @@ public class MainActivity extends AppCompatActivity {
         for (String s : mMyApplication.getCategory()) {
             categories.add(s.substring(0, 1));
         }
-        for (int i = 65; i <= 88; i++) {
+        for (int i = ASCII_A; i <= ASCII_Z; i++) {
             int z = Collections.frequency(categories, Character.toString((char) i));
             if (z > n) {
                 n = z;
                 int total = i + point;
-                if (total < 65) {
-                    total = 88 - (64 - total);
-                } else if (total > 87) {
-                    total = (total - 89) + 65;
-                } else if (total == 81) {
+                if (total < ASCII_A) {
+                    total = ASCII_Z - (64 - total);
+                } else if (total > ASCII_Z) {
+                    total = (total - 89) + ASCII_A;
+                } else if (total == ASCII_Q) {
                     if (point >= 0) {
                         total++;
                     } else {

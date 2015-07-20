@@ -93,6 +93,7 @@ public class Utilities {
                 };
 
                 return getDataColumn(context, contentUri, selection, selectionArgs);
+
             }
         }
         // MediaStore (and general)

@@ -74,8 +74,7 @@
             android:background="#FFFFFFFF"
             android:maxLines="1"
             android:textSize="80sp"
-            tools:text="test3"
-            />
+            tools:text="test3"/>
     </LinearLayout>
 
     <FrameLayout
