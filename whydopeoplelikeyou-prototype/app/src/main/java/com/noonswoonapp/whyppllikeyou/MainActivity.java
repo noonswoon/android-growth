@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ASCII_A = 65;
     private static final int ASCII_Q = 81;
     private static final int ASCII_Z = 88;
+    private static final int IMAGE_QUALITY = 100;
     private ProgressDialog mProgressDialog;
     private MyApplication mMyApplication;
     private CallbackManager callbackManager;
@@ -130,6 +131,13 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Click")
                         .setLabel("didClick")
                         .build());
+                ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseConstant.CLASS_USER_PROFILE);
+                query.getInBackground(mMyApplication.getParseId(), new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        parseObject.put(ParseConstant.KEY_CLICKED_ADS, true);
+                    }
+                });
             }
 
             @Override
@@ -183,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap2 = Utilities.takeLayoutScreenshot((RelativeLayout) findViewById(R.id.layout_result_image));
         Bitmap combine = combineImages(bitmap1, bitmap2);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        combine.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        combine.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
         byte[] image = stream.toByteArray();
         final ParseFile mFile = new ParseFile("UserGeneratedResult.png", image);
         mUploadSuccess = false;

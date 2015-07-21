@@ -1,4 +1,4 @@
-package com.noonswoonapp.whyppllikeyou;
+package com.noonswoonapp.singlelevel;
 
 public final class ParseConstant {
     // Class Name
