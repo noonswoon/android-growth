@@ -25,8 +25,10 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="false"
-        android:background="#fffeffbb"
-        android:textSize="30dp"/>
+        android:background="@drawable/button_c_default"
+        android:textSize="30sp"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
 
     <ImageView
         android:layout_width="wrap_content"

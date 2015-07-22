@@ -156,9 +156,7 @@ public class MainActivity extends AppCompatActivity {
                     mIsRetry = true;
                     AdBuddiz.showAd(MainActivity.this);
                 } else {
-                    Intent intent = new Intent(MainActivity.this, SplashScreen.class);
-                    startActivity(intent);
-                    finish();
+                    returnToLogin();
                 }
 
             }
@@ -318,7 +316,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void shareLinkContent() {
-
         mShareDialog.show(mShareLinkContent);
         mProgressDialog.dismiss();
         mShareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
@@ -446,10 +443,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (mIsRetry) {
-            Intent intent = new Intent(MainActivity.this, SplashScreen.class);
-            startActivity(intent);
-            finish();
+            returnToLogin();
         }
+    }
+
+    private void returnToLogin() {
+        Intent intent = new Intent(MainActivity.this, LoginScreen.class);
+        startActivity(intent);
+        finish();
     }
 
 }

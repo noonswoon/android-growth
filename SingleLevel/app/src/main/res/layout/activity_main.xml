@@ -3,35 +3,88 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
               tools:context=".MainActivity"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:background="@drawable/bg_default">
 
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/imageview_result"
-        android:layout_weight="1"/>
+        android:layout_weight="0.7"
+        android:layout_margin="8dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textview_lvl"
-        android:textSize="25sp"
-        android:gravity="center"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/imageview_profile"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/profile_default"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textview_desc1"
-        android:textSize="25sp"
-        android:gravity="center"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Anonymous Monous"
+            android:id="@+id/textview_name"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/imageview_profile"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:layout_marginLeft="15dp"/>
+    </RelativeLayout>
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textview_desc2"
-        android:textSize="25sp"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:layout_weight="0.25">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageview_result_image"
+            android:layout_weight="0.5"
+            tools:src="@drawable/question_1"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageview_result_desc"
+            android:layout_weight="0.5"
+            tools:src="@drawable/r_desc_1"
+            android:background="#00000000"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:layout_margin="5dp">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="เริ่มใหม่"
+            android:id="@+id/button_retry"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:textSize="25sp"
+            android:background="@drawable/button_c_default"/>
+
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.facebook.share.widget.ShareButton"
+            android:id="@+id/button_share"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:text="Share"
+            android:textSize="25sp"
+            android:enabled="false"/>
+
+    </LinearLayout>
+
 </LinearLayout>

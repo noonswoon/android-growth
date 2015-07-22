@@ -1,6 +1,7 @@
 package com.noonswoonapp.singlelevel;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class LoginScreen extends Activity {
     private MyApplication mMyApplication;
     private Boolean mLoggedIn = false;
     private Button mStartButton;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,8 @@ public class LoginScreen extends Activity {
                                                        AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
                     mLoggedIn = false;
+                    mStartButton.setVisibility(View.INVISIBLE);
+                    mLoginButton.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -75,7 +79,6 @@ public class LoginScreen extends Activity {
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "Login Success");
                 mLoggedIn = true;
-                mLoginButton.setVisibility(View.INVISIBLE);
                 accessTokenTracker.startTracking();
                 getUserProfile();
             }
@@ -93,6 +96,9 @@ public class LoginScreen extends Activity {
     }
 
     private void getUserProfile() {
+        mLoginButton.setVisibility(View.INVISIBLE);
+        mProgressDialog = Utilities.createProgressDialog("Retrieving user profile...", LoginScreen.this);
+        mProgressDialog.show();
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -109,8 +115,11 @@ public class LoginScreen extends Activity {
                                 e.printStackTrace();
                             }
                             mMyApplication.setUserProfile(object);
+                            mProgressDialog.dismiss();
+                            mStartButton.setVisibility(View.VISIBLE);
                             sendUserProfile();
                         } else {
+                            mProgressDialog.dismiss();
                             LoginManager.getInstance().logOut();
                             Toast.makeText(LoginScreen.this, "No internet connection. Please try again.", Toast.LENGTH_LONG).show();
                             mLoginButton.setVisibility(View.VISIBLE);
@@ -120,7 +129,7 @@ public class LoginScreen extends Activity {
 
         );
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name, last_name, picture.width(230).height(230), birthday, email, gender");
+        parameters.putString("fields", "id, first_name, last_name, picture.width(300).height(300), birthday, email, gender");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -148,7 +157,6 @@ public class LoginScreen extends Activity {
                 if (e == null) {
                     Log.v(TAG, "Send user profile Success");
                     mMyApplication.setParseId(mUser.getObjectId());
-
                 } else {
                     Log.e(TAG, "Send user profile Failed");
                 }
@@ -180,7 +188,6 @@ public class LoginScreen extends Activity {
         super.onResume();
         AppEventsLogger.activateApp(this);
         if (AccessToken.getCurrentAccessToken() != null && !mLoggedIn) {
-            mLoginButton.setVisibility(View.INVISIBLE);
             mLoggedIn = true;
             getUserProfile();
         }

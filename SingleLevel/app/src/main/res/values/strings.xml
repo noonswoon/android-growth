@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SingleLevel</string>
+    <string name="app_name">โสดแค่ไหน</string>
     <string name="facebook_app_id">495438547278664</string>
     <string name="parse_app_id">P8e35p55tPX8GyU5dEb3trHVwCRnaujVipX3tImV</string>
     <string name="parse_client_key">sXGT77ZMWiNaWOcdLqzy9WCEORQSLCMfHlyNeYpa</string>
@@ -7,7 +7,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login_screen">LoginScreen</string>
-    <string name="title_activity_splash_screen">SingleLevel</string>
+    <string name="title_activity_splash_screen">โสดแค่ไหน</string>
     <string name="title_activity_questionnaire">Questionnaire</string>
 
 </resources>

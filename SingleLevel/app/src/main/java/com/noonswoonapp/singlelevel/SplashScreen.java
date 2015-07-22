@@ -4,16 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
-import android.util.Log;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 
 public class SplashScreen extends Activity {
@@ -32,24 +24,24 @@ public class SplashScreen extends Activity {
 
         createQuestionnaireDB();
         createResultDB();
-        PackageInfo info;
-        try {
-            info = getPackageManager().getPackageInfo("com.noonswoonapp.singlelevel", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md;
-                md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                String something = new String(Base64.encode(md.digest(), 0));
-                //String something = new String(Base64.encodeBytes(md.digest()));
-                Log.e("hash key", something);
-            }
-        } catch (PackageManager.NameNotFoundException e1) {
-            Log.e("name not found", e1.toString());
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("no such an algorithm", e.toString());
-        } catch (Exception e) {
-            Log.e("exception", e.toString());
-        }
+//        PackageInfo info;
+//        try {
+//            info = getPackageManager().getPackageInfo("com.noonswoonapp.singlelevel", PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md;
+//                md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                String something = new String(Base64.encode(md.digest(), 0));
+//                //String something = new String(Base64.encodeBytes(md.digest()));
+//                Log.e("hash key", something);
+//            }
+//        } catch (PackageManager.NameNotFoundException e1) {
+//            Log.e("name not found", e1.toString());
+//        } catch (NoSuchAlgorithmException e) {
+//            Log.e("no such an algorithm", e.toString());
+//        } catch (Exception e) {
+//            Log.e("exception", e.toString());
+//        }
 
         handler = new Handler();
         runnable = new Runnable() {
@@ -127,16 +119,16 @@ public class SplashScreen extends Activity {
         SharedPreferences shared = getSharedPreferences(RESULT_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = shared.edit();
         if (shared.getBoolean("install", true)) {
-            Utilities.saveArray(new String[]{"1", "คุณไม่โสดนี่นา", "ยินดีด้วย คุณเป็นคนโชคดีคนหนึ่งที่มีใครให้คิดถึง", "result_1m", "result_1f"}, "A1", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"13", "โสดชิว กลับบ้านคนเดียว", "ลองหาเพื่อนร่วมทางกลับนะ แชร์ค่าน้ำมัน ประหยัดดี", "result_2m", "result_2f"}, "A2", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"26", "โสดติ้ส เดินห้างคนเดียว", "คราวหลังหาเพื่อนมาสักคน จะได้ช่วยกันถือของ", "result_3m", "result_3f"}, "A3", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"32", "โสดสู้ฟัด หม่ำข้าวนอกบ้านคนเดียว", "ลองชวนเพื่อนสักคนมาด้วย เผื่อได้ส่วนลดค่าอาหาร", "result_4m", "result_4f"}, "A4", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"44", "โสดจิต ดูหนังเก้าอี้สวีทคนเดียว", "คราวหลังซื้อบัตรธรรมดาก็พอนะ", "result_5m", "result_5f"}, "A5", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"56", "โสดบันเทิง ร้องคาราโอเกะคนเดียว", "หาใครมาฟังบ้าง จะได้รู้ว่าควรไปประกวดร้องเพลงรึเปล่า", "result_6m", "result_6f"}, "A6", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"63", "โสดมโน สามารถพูดคนเดียว", "ระวังคนอื่นคิดว่าคุณบ้าเอานะ", "result_7m", "result_7f"}, "A7", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"75", "โสดหลอน เที่ยวสวนสนุกคนเดียว", "อย่างน้อยก็หาเพื่อนมาหน่อยเหอะ เหงาไปนะ", "result_8m", "result_8f"}, "A8", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"89", "โสดสาหัส ถีบเรือเป็ดคนเดียว", "คุณต้องปั่นเรือท่ามกลางคู่รัก น่าสงสารจริงๆ", "result_9m", "result_9f"}, "A9", RESULT_PREFS, this);
-            Utilities.saveArray(new String[]{"99", "โสดโ*ตรพ่อ ฉลองวาเลนไทน์คนเดียว", "ลองให้โอกาสตัวคุณเองสิ ขอให้เจอคนพิเศษเร็วๆนะ", "result_10m", "result_10f"}, "A10", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_1", "result_1m", "result_1f", "share_1m", "share_1f"}, "A1", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_2", "result_2m", "result_2f", "share_2m", "share_2f"}, "A2", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_3", "result_3m", "result_3f", "share_3m", "share_3f"}, "A3", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_4", "result_4m", "result_4f", "share_4m", "share_4f"}, "A4", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_5", "result_5m", "result_5f", "share_5m", "share_5f"}, "A5", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_6", "result_6m", "result_6f", "share_6m", "share_6f"}, "A6", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_7", "result_7m", "result_7f", "share_7m", "share_7f"}, "A7", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_8", "result_8m", "result_8f", "share_8m", "share_8f"}, "A8", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_9", "result_9m", "result_9f", "share_9m", "share_9f"}, "A9", RESULT_PREFS, this);
+            Utilities.saveArray(new String[]{"r_desc_10", "result_10m", "result_10f", "share_10m", "share_10f"}, "A10", RESULT_PREFS, this);
             editor.putBoolean("install", false);
             editor.apply();
         }
