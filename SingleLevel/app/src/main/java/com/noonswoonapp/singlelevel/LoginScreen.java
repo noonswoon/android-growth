@@ -3,10 +3,17 @@ package com.noonswoonapp.singlelevel;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -26,6 +33,7 @@ import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,6 +119,7 @@ public class LoginScreen extends Activity {
                                 JSONObject picture = object.getJSONObject("picture");
                                 JSONObject data = picture.getJSONObject("data");
                                 mMyApplication.setProfileImage(data.getString("url"));
+                                Picasso.with(LoginScreen.this).load(data.getString("url")).resize(230, 230).transform(new RoundedTransformation(115, 0)).fetch();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -177,6 +186,47 @@ public class LoginScreen extends Activity {
         });
     }
 
+    public class RoundedTransformation implements com.squareup.picasso.Transformation {
+        private final int radius;
+        private final int margin;
+
+        public RoundedTransformation(final int radius, final int margin) {
+            this.radius = radius;
+            this.margin = margin;
+        }
+
+        @Override
+        public Bitmap transform(final Bitmap source) {
+
+            final Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+
+            Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(output);
+            canvas.drawCircle((source.getWidth() - margin) / 2, (source.getHeight() - margin) / 2, radius - 2, paint);
+
+            if (source != output) {
+                source.recycle();
+            }
+
+            Paint paint1 = new Paint();
+            paint1.setColor(Color.parseColor("#FFee34"));
+            paint1.setStyle(Paint.Style.STROKE);
+            paint1.setAntiAlias(true);
+            paint1.setStrokeWidth(5);
+            canvas.drawCircle((source.getWidth() - margin) / 2, (source.getHeight() - margin) / 2, radius - 2, paint1);
+
+
+            return output;
+        }
+
+        @Override
+        public String key() {
+            return "rounded";
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -198,5 +248,7 @@ public class LoginScreen extends Activity {
         super.onPause();
         AppEventsLogger.deactivateApp(this);
     }
+
+
 
 }

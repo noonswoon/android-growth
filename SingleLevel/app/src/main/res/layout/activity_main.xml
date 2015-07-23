@@ -4,20 +4,24 @@
                 android:layout_height="match_parent"
               tools:context=".MainActivity"
               android:orientation="vertical"
-              android:background="@drawable/bg_default">
+              android:background="@drawable/bg_default"
+              android:id="@+id/linearlayout_main">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.7"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:id="@+id/relativelayout_profile"
+        android:background="#ffffffff"
+        >
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/imageview_profile"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/profile_default"
+            tools:src="@drawable/profile_default"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"/>
 
@@ -29,8 +33,8 @@
             android:layout_alignParentRight="true"
             android:layout_toRightOf="@+id/imageview_profile"
             android:textSize="25sp"
-            android:gravity="center"
-            android:layout_marginLeft="15dp"/>
+            android:layout_marginLeft="15dp"
+            android:gravity="left|fill_vertical"/>
     </RelativeLayout>
 
     <LinearLayout

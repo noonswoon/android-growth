@@ -3,17 +3,18 @@
     package="com.noonswoonapp.singlelevel"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
-    <permission android:protectionLevel="signature"
-                android:name="com.noonswoonapp.singleleve.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.noonswoonapp.singleleve.permission.C2D_MESSAGE" />
+    <permission
+        android:name="com.noonswoonapp.singlelevel.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
+    <uses-permission android:name="com.noonswoonapp.singlelevel.permission.C2D_MESSAGE"/>
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -29,9 +30,11 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <provider android:authorities="com.facebook.app.FacebookContentProvider495438547278664"
-                  android:name="com.facebook.FacebookContentProvider"
-                  android:exported="true"/>
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider495438547278664"
+            android:exported="true"/>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -59,26 +62,31 @@
         </activity>
 
         <!-- Parse Push -->
-        <service android:name="com.parse.PushService" />
+        <service android:name="com.parse.PushService"/>
+
         <receiver android:name="com.parse.ParseBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.GcmBroadcastReceiver"
-                  android:permission="com.google.android.c2dm.permission.SEND">
+        <receiver
+            android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="com.noonswoonapp.singlelevel" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+
+                <category android:name="com.noonswoonapp.singlelevel"/>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported="false">
+        <receiver
+            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
+                <action android:name="com.parse.push.intent.RECEIVE"/>
+                <action android:name="com.parse.push.intent.DELETE"/>
+                <action android:name="com.parse.push.intent.OPEN"/>
             </intent-filter>
         </receiver>
     </application>

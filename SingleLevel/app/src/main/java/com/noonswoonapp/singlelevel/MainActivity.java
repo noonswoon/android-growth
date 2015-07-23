@@ -1,5 +1,6 @@
 package com.noonswoonapp.singlelevel;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,8 +19,11 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +71,8 @@ public class MainActivity extends Activity {
     private CallbackManager callbackManager;
     private ShareLinkContent mShareLinkContent;
     private Boolean mUploadSuccess;
+    private RelativeLayout mProfileLayout;
+    private LinearLayout mMainLayout;
     private int result;
 
     @Override
@@ -74,10 +80,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+        Intent intent = getIntent();
+        point = intent.getIntExtra("point", 0);
+
         setContentView(R.layout.activity_main);
 
-        mShareDialog = new ShareDialog(MainActivity.this);
         mMyApplication = (MyApplication) getApplication();
+        mShareDialog = new ShareDialog(MainActivity.this);
         mResultImage = (ImageView) findViewById(R.id.imageview_result_image);
         mResultDesc = (ImageView) findViewById(R.id.imageview_result_desc);
         mRetryButton = (Button) findViewById(R.id.button_retry);
@@ -85,12 +94,46 @@ public class MainActivity extends Activity {
         mProfileName = (TextView) findViewById(R.id.textview_name);
         mShareButton = (ShareButton) findViewById(R.id.button_share);
 
-        Picasso.with(MainActivity.this).load(mMyApplication.getProfileImage()).resize(230, 230).transform(new RoundedTransformation(115, 0)).into(mProfileImage);
-        try {
-            mProfileName.setText("ระดับความโสดของ\n" + mMyApplication.getUserProfile().getString("first_name") + " " + mMyApplication.getUserProfile().getString("last_name"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        setUserProfile();
+        getResult();
+
+        mProfileLayout = (RelativeLayout) findViewById(R.id.relativelayout_profile);
+        mProfileLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressLint("NewApi")
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onGlobalLayout() {
+                SharedPreferences shared = getSharedPreferences(RESULT_PREFS, Context.MODE_PRIVATE);
+                int resID = getResources().getIdentifier(shared.getString("A" + String.valueOf(result) + checkShareGender(), null), "drawable", getPackageName());
+                Drawable d = ContextCompat.getDrawable(MainActivity.this, resID);
+                final Bitmap bitmap1 = ((BitmapDrawable) d).getBitmap();
+                mProfileLayout.getLayoutParams().width = bitmap1.getWidth();
+                mProfileLayout.requestLayout();
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
+                    mProfileLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                else
+                    mProfileLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                mProfileLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @SuppressLint("NewApi")
+                    @SuppressWarnings("deprecation")
+                    @Override
+                    public void onGlobalLayout() {
+                        Bitmap bitmap2 = Utilities.takeLayoutScreenshot((RelativeLayout) findViewById(R.id.relativelayout_profile));
+
+                        uploadImage(bitmap1, bitmap2);
+                        mProfileLayout.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
+                        mProfileLayout.requestLayout();
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
+                            mProfileLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        else
+                            mProfileLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                });
+            }
+        });
+
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,8 +158,9 @@ public class MainActivity extends Activity {
             }
         });
 
-        Intent intent = getIntent();
-        point = intent.getIntExtra("point", 0);
+    }
+
+    private void getResult() {
         if (point <= 10 && point >= 12) {
             getResult(1);
         } else if (point >= 13 && point <= 15) {
@@ -140,13 +184,42 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void uploadImage() {
-        SharedPreferences shared = getSharedPreferences(RESULT_PREFS, Context.MODE_PRIVATE);
-        int resID = getResources().getIdentifier(shared.getString("A" + String.valueOf(result) + checkShareGender(), null), "drawable", getPackageName());
-        Drawable d = ContextCompat.getDrawable(this, resID);
-        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+    private void setUserProfile() {
+        try {
+            mProfileName.setText("ระดับความโสดของ\n" + mMyApplication.getUserProfile().getString("first_name") + " " + mMyApplication.getUserProfile().getString("last_name"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Picasso.with(MainActivity.this)
+                .load(mMyApplication.getProfileImage())
+                .resize(230, 230)
+                .transform(new RoundedTransformation(115, 0))
+                .into(mProfileImage);
+    }
+
+    public Bitmap combineImages(Bitmap c, Bitmap s) {
+        Bitmap cs;
+
+        int width, height;
+
+        width = c.getWidth();
+        height = c.getHeight();
+
+        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas comboImage = new Canvas(cs);
+
+        comboImage.drawBitmap(c, 0f, 0f, null);
+        comboImage.drawBitmap(s, 0f, 0f, null);
+
+        return cs;
+    }
+
+    private void uploadImage(Bitmap bitmap1, Bitmap bitmap2) {
+        Bitmap combine = combineImages(bitmap1, bitmap2);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        combine.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] image = stream.toByteArray();
         final ParseFile mFile = new ParseFile("UserGeneratedResult.png", image);
         mUploadSuccess = false;
@@ -215,7 +288,7 @@ public class MainActivity extends Activity {
             @Override
             public void onError(FacebookException e) {
                 Log.e(TAG, "Share Result: Share Error");
-                Log.e(TAG, "Share Result:" + e.toString());
+                Log.e(TAG, "Share Result: " + e.toString());
             }
         });
     }
@@ -263,7 +336,6 @@ public class MainActivity extends Activity {
 
     private void getResult(int result) {
         this.result = result;
-        uploadImage();
         setResultImage(checkResultGender(), mResultImage, result);
         setResultImage(RESULT_DESC, mResultDesc, result);
     }

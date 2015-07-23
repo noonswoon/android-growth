@@ -1,0 +1,94 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00000000023005e8, pid=4272, tid=5012
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_79-b15) (build 1.7.0_79-b15)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (24.79-b02 mixed mode windows-amd64 compressed oops)
+# Problematic frame:
+# V  [jvm.dll+0xf05e8]
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000002a42000):  GCTaskThread [stack: 0x00000000067e0000,0x00000000068e0000] [id=5012]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x000000008dc0cce8
+
+Registers:
+RAX=0x000000008dc0ccd0, RBX=0x00000000c0417938, RCX=0x0000000000000000, RDX=0x0000800240000000
+RSP=0x00000000068df990, RBP=0x00000000c2b873c0, RSI=0x0000000009494910, RDI=0x0000000009494910
+R8 =0x0000000000000027, R9 =0x0000000000000000, R10=0x0000000000000000, R11=0x000000000000000c
+R12=0x00000000c2b873f0, R13=0x00000000b004c350, R14=0x00000000b004c358, R15=0x00000000c2b873a0
+RIP=0x00000000023005e8, EFLAGS=0x0000000000010202
+
+Top of Stack: (sp=0x00000000068df990)
+0x00000000068df990:   00000000b004c070 00000000c2b87368
+0x00000000068df9a0:   0000000009494910 00000000023e7cb2
+0x00000000068df9b0:   0000000000000000 0000000002a42740
+0x00000000068df9c0:   0000000002a3c7e0 0000000009494910
+0x00000000068df9d0:   00000000000018c7 00000000025ab1dc
+0x00000000068df9e0:   0000000009494910 00000000c2b873a0
+0x00000000068df9f0:   0000000009494910 00000000027d9178
+0x00000000068dfa00:   000000000bc27000 0000000000000010
+0x00000000068dfa10:   0000000009494910 00000000022e3762
+0x00000000068dfa20:   00000000b0e78060 000007fefd5e133c
+0x00000000068dfa30:   0000000002a3c7e0 0000000002a3c7e0
+0x00000000068dfa40:   0000000002a42750 0000000002a42740
+0x00000000068dfa50:   00000000027d9178 0000000009494910
+0x00000000068dfa60:   0000000000000000 0000000000000000
+0x00000000068dfa70:   00000000093d5470 00000000025a83f5
+0x00000000068dfa80:   00000000093d5470 0000000000000000 
+
+Instructions: (pc=0x00000000023005e8)
+0x00000000023005c8:   82 55 01 00 00 80 3d f4 6a 66 00 00 74 0e 8b 43
+0x00000000023005d8:   08 41 8b c9 48 d3 e0 49 03 c2 eb 04 48 8b 43 08
+0x00000000023005e8:   44 8b 40 18 48 8d 48 10 45 85 c0 7e 0c 41 f6 c0
+0x00000000023005f8:   01 75 50 41 c1 f8 03 eb 59 79 48 80 3d be 6a 66 
+
+
+Register to memory mapping:
+
+RAX=0x000000008dc0ccd0 is an unknown value
+RBX=0x00000000c0417938 is pointing into object: 0x00000000c0417930
+java.lang.String 
+ - klass: 'java/lang/String'
+RCX=0x0000000000000000 is an unknown value
+RDX=0x0000800240000000 is an unknown value
+RSP=0x00000000068df990 is an unknown value
+RBP=0x00000000c2b873c0 is pointing into object: 0x00000000c2b873a0
+java.lang.reflect.Method 
+ - klass: 'java/lang/reflect/Method'
+RSI=0x0000000009494910 is an unknown value
+RDI=0x0000000009494910 is an unknown value
+R8 =0x0000000000000027 is an unknown value
+R9 =0x0000000000000000 is an unknown value
+R10=0x0000000000000000 is an unknown value
+R11=0x000000000000000c is an unknown value
+R12=0x00000000c2b873f0 is an oop
+[Ljava.lang.Class; 
+ - klass: 'java/lang/Class'[]
+ - length: 1
+R13=0x00000000b004c350 is pointing into object: 0x00000000b004c060
+{instance class} 
+ - klass: {other class}
+R14=0x00000000b004c358 is an oop
+{constant pool} 
+ - klass: {other class}
+ - holder: 0x00000000b004f030
+ - cache: 0x00000000b0134c78
+ -   1 :  : " " {0xc032d470}
+ -   2 :  : " throws " {0xc0381ab0}
+ -   3 :  : "(" {0xc0541d50}
+ -   4 :  : ")" {0xc0541d20}
+ -   5 :  : "," {0xc04e76c8}
+ -   6 :  : "..." {0xc03818d8}
+ -   7 :  : "<" {0xc0381ae8}
+ -   8 :  : ">" {0xc0381b18}
+ -   9 :  : "> " {0xc03823a8}
+ -  10 :  : 
