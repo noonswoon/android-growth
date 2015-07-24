@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
@@ -109,26 +110,32 @@ public class MainActivity extends Activity {
                 final Bitmap bitmap1 = ((BitmapDrawable) d).getBitmap();
                 mProfileLayout.getLayoutParams().width = bitmap1.getWidth();
                 mProfileLayout.requestLayout();
+                final float default_size = mProfileName.getTextSize() / 2;
+                mProfileName.setTextSize(20);
+                mProfileName.requestLayout();
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
                     mProfileLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 else
                     mProfileLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
-                mProfileLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                mProfileName.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @SuppressLint("NewApi")
                     @SuppressWarnings("deprecation")
                     @Override
                     public void onGlobalLayout() {
-                        Bitmap bitmap2 = Utilities.takeLayoutScreenshot((RelativeLayout) findViewById(R.id.relativelayout_profile));
+                        uploadImage(bitmap1);
 
-                        uploadImage(bitmap1, bitmap2);
                         mProfileLayout.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
+                        mProfileLayout.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
                         mProfileLayout.requestLayout();
+
+                        mProfileName.setTextSize(default_size);
+                        mProfileName.requestLayout();
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
-                            mProfileLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            mProfileName.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         else
-                            mProfileLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            mProfileName.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
                 });
             }
@@ -186,7 +193,7 @@ public class MainActivity extends Activity {
 
     private void setUserProfile() {
         try {
-            mProfileName.setText("ระดับความโสดของ\n" + mMyApplication.getUserProfile().getString("first_name") + " " + mMyApplication.getUserProfile().getString("last_name"));
+            mProfileName.setText("ระดับความโสดของ " + mMyApplication.getUserProfile().getString("first_name") + " " + mMyApplication.getUserProfile().getString("last_name"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -198,26 +205,50 @@ public class MainActivity extends Activity {
                 .into(mProfileImage);
     }
 
-    public Bitmap combineImages(Bitmap c, Bitmap s) {
-        Bitmap cs;
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        return resizedBitmap;
+    }
+
+    public Bitmap combineImages(Bitmap c, Bitmap s, Bitmap n) {
+        Bitmap csn;
+        Bitmap s_resize = getResizedBitmap(s, 110, 110);
 
         int width, height;
 
         width = c.getWidth();
         height = c.getHeight();
 
-        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        csn = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-        Canvas comboImage = new Canvas(cs);
+        Canvas comboImage = new Canvas(csn);
 
         comboImage.drawBitmap(c, 0f, 0f, null);
-        comboImage.drawBitmap(s, 0f, 0f, null);
+        comboImage.drawBitmap(s_resize, 10f, 10f, null);
+        comboImage.drawBitmap(n, s_resize.getWidth() + 25, 25f, null);
 
-        return cs;
+        return csn;
     }
 
-    private void uploadImage(Bitmap bitmap1, Bitmap bitmap2) {
-        Bitmap combine = combineImages(bitmap1, bitmap2);
+    private void uploadImage(Bitmap bitmap1) {
+        mProfileImage.setDrawingCacheEnabled(true);
+        mProfileImage.buildDrawingCache();
+        Bitmap bitmap2 = mProfileImage.getDrawingCache();
+        mProfileName.setDrawingCacheEnabled(true);
+        mProfileName.buildDrawingCache();
+        Bitmap bitmap3 = mProfileName.getDrawingCache();
+        Bitmap combine = combineImages(bitmap1, bitmap2, bitmap3);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         combine.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] image = stream.toByteArray();

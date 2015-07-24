@@ -13,7 +13,6 @@
         android:layout_weight="0.7"
         android:layout_margin="8dp"
         android:id="@+id/relativelayout_profile"
-        android:background="#ffffffff"
         >
 
         <ImageView
@@ -27,14 +26,16 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="Anonymous Monous"
             android:id="@+id/textview_name"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentRight="false"
             android:layout_toRightOf="@+id/imageview_profile"
             android:textSize="25sp"
             android:layout_marginLeft="15dp"
-            android:gravity="left|fill_vertical"/>
+            android:gravity="left|fill_vertical"
+            android:layout_alignParentBottom="false"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 
     <LinearLayout
