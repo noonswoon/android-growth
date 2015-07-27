@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                                                         .setContentDescription("คลิกที่นี่ เพื่อลองค้นหาเหตุผลที่ทำไมคนถึงชอบคุณดูสิ")
                                                         .setContentTitle("เหตุผลที่ทำไมคนถึงชอบคุณ")
                                                         .setImageUrl(Uri.parse(mImageUrl))
-                                                        .setContentUrl(Uri.parse("https://goo.gl/pszrQA"))
+                                                        .setContentUrl(Uri.parse("http://bit.ly/whyppllike"))
                                                         .build();
                                                 mShareButton.setEnabled(true);
                                                 mUploadSuccess = true;
