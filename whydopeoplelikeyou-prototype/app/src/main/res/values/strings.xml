@@ -5,7 +5,7 @@
     <string name="facebook_app_id">6010545225</string>
     <string name="parse_app_id">o65F0zJJ6YGRvXm7cFitouYlRblWzC3BLiw5Yksu</string>
     <string name="parse_client_key">TeM3aKKALJDaA01x181cpYfF0e2cWxJVzQm4LVAz</string>
-    <string name="adbuddiz_publisherkey">5b6b0a2b-766f-4dc3-8fdb-a2e33de05a3e</string>
+    <string name="adbuddiz_publisherkey">6393db93-2de6-447b-9b1c-9689f62de152</string>
 
     <string name="title_activity_splash_screen">ชอบฉันไม?</string>
     <string name="title_activity_questionaire">Questionaire</string>
@@ -17,7 +17,7 @@
     <string name="login_start_button">เริ่มเลย!</string>
     <string name="title_activity_test">Test</string>
     <string name="text_edit_name_hint">กดเพื่อเปลี่ยนชื่อ</string>
-    <string name="view_text_watermark2">คลิกที่นี่ เพื่อดาวน์โหลดแอพแล</string>
+    <string name="view_text_watermark2">คลิกที่นี่ เพื่อดาวน์โหลดแอพ</string>
     <string name="view_text_result_header">นี่ใช่คุณหรือเปล่า?</string>
     <string name="view_text_watermark1">ะ หาเหตุผลที่ทำให้คนชอบคุณ</string>
 
