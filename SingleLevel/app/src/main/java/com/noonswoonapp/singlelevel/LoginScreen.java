@@ -9,11 +9,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -59,6 +60,7 @@ public class LoginScreen extends Activity {
         mMyApplication = (MyApplication) getApplication();
         mLoginButton = (LoginButton) findViewById(R.id.button_login);
         mStartButton = (Button) findViewById(R.id.button_start);
+        Utilities.changeFontSuperMarket(mStartButton, this);
 
         final AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -101,6 +103,11 @@ public class LoginScreen extends Activity {
                 Log.e(TAG, "Login Error");
             }
         });
+    }
+
+    private void changeFontSuperMarket(TextView textView) {
+        Typeface font = Typeface.createFromAsset(getAssets(), "font/supermarket.ttf");
+        textView.setTypeface(font);
     }
 
     private void getUserProfile() {

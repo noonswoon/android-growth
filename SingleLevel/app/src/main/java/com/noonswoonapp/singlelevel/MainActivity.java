@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -91,8 +92,10 @@ public class MainActivity extends Activity {
         mResultImage = (ImageView) findViewById(R.id.imageview_result_image);
         mResultDesc = (ImageView) findViewById(R.id.imageview_result_desc);
         mRetryButton = (Button) findViewById(R.id.button_retry);
+        Utilities.changeFontSuperMarket(mRetryButton, this);
         mProfileImage = (ImageView) findViewById(R.id.imageview_profile);
         mProfileName = (TextView) findViewById(R.id.textview_name);
+        Utilities.changeFontSuperMarket(mProfileName, this);
         mShareButton = (ShareButton) findViewById(R.id.button_share);
 
         setUserProfile();
@@ -131,6 +134,7 @@ public class MainActivity extends Activity {
                         mProfileLayout.requestLayout();
 
                         mProfileName.setTextSize(default_size);
+                        mProfileName.setGravity(Gravity.CENTER);
                         mProfileName.requestLayout();
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
                             mProfileName.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -169,25 +173,25 @@ public class MainActivity extends Activity {
 
     private void getResult() {
         if (point <= 10 && point >= 12) {
-            getResult(1);
+            setQuestionnaireResult(1);
         } else if (point >= 13 && point <= 15) {
-            getResult(2);
+            setQuestionnaireResult(2);
         } else if (point >= 16 && point <= 18) {
-            getResult(3);
+            setQuestionnaireResult(3);
         } else if (point >= 19 && point <= 21) {
-            getResult(4);
+            setQuestionnaireResult(4);
         } else if (point >= 22 && point <= 24) {
-            getResult(5);
+            setQuestionnaireResult(5);
         } else if (point >= 25 && point <= 27) {
-            getResult(6);
+            setQuestionnaireResult(6);
         } else if (point >= 28 && point <= 30) {
-            getResult(7);
+            setQuestionnaireResult(7);
         } else if (point >= 31 && point <= 33) {
-            getResult(8);
+            setQuestionnaireResult(8);
         } else if (point >= 34 && point <= 36) {
-            getResult(9);
+            setQuestionnaireResult(9);
         } else if (point >= 37 && point <= 40) {
-            getResult(10);
+            setQuestionnaireResult(10);
         }
     }
 
@@ -235,8 +239,8 @@ public class MainActivity extends Activity {
         Canvas comboImage = new Canvas(csn);
 
         comboImage.drawBitmap(c, 0f, 0f, null);
-        comboImage.drawBitmap(s_resize, 10f, 10f, null);
-        comboImage.drawBitmap(n, s_resize.getWidth() + 25, 25f, null);
+        comboImage.drawBitmap(s_resize, 130f, 10f, null);
+        comboImage.drawBitmap(n, s_resize.getWidth() + 145f, 25f, null);
 
         return csn;
     }
@@ -365,7 +369,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void getResult(int result) {
+    private void setQuestionnaireResult(int result) {
         this.result = result;
         setResultImage(checkResultGender(), mResultImage, result);
         setResultImage(RESULT_DESC, mResultDesc, result);
@@ -409,7 +413,7 @@ public class MainActivity extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return RESULT_IMAGE_M;
+        return RESULT_SHARE_M;
     }
 
     @Override

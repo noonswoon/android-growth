@@ -7,20 +7,25 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
 
 
 public class Questionnaire extends Activity implements View.OnClickListener {
 
     private static final String QUESTION_PREFS = "questionnaire_db";
     private static final int QUESTION_MAX = 10;
+    private AnimatedCircleLoadingView animatedCircleLoadingView;
     private Button mChoice1;
     private Button mChoice2;
     private Button mChoice3;
     private Button mChoice4;
     private ImageView mQuestionImage;
     private TextView mQuestionText;
+    private FrameLayout mLoadingLayout;
     private int question = 0;
     private int point = 0;
 
@@ -30,12 +35,20 @@ public class Questionnaire extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_questionnaire);
 
         mChoice1 = (Button) findViewById(R.id.button_choice1);
+        Utilities.changeFontSuperMarket(mChoice1, this);
         mChoice2 = (Button) findViewById(R.id.button_choice2);
+        Utilities.changeFontSuperMarket(mChoice2, this);
         mChoice3 = (Button) findViewById(R.id.button_choice3);
+        Utilities.changeFontSuperMarket(mChoice3, this);
         mChoice4 = (Button) findViewById(R.id.button_choice4);
+        Utilities.changeFontSuperMarket(mChoice4, this);
         mQuestionImage = (ImageView) findViewById(R.id.imageview_questionnaire);
         mQuestionText = (TextView) findViewById(R.id.textview_question);
+        Utilities.changeFontSuperMarket(mQuestionText, this);
+        mLoadingLayout = (FrameLayout) findViewById(R.id.framelayout_loading);
+        animatedCircleLoadingView = (AnimatedCircleLoadingView) findViewById(R.id.circle_loading_view);
         loadQuestion();
+        initLoadingScreen();
 
         mChoice1.setOnClickListener(this);
         mChoice2.setOnClickListener(this);
@@ -58,10 +71,13 @@ public class Questionnaire extends Activity implements View.OnClickListener {
             mChoice3.setText(shared.getString("QC" + String.valueOf(question) + "_2", null));
             mChoice4.setText(shared.getString("QC" + String.valueOf(question) + "_3", null));
         } else if (question == QUESTION_MAX){
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("point", point);
-            startActivity(intent);
-            finish();
+            mLoadingLayout.setVisibility(View.VISIBLE);
+            animatedCircleLoadingView.setVisibility(View.VISIBLE);
+            mChoice1.setClickable(false);
+            mChoice2.setClickable(false);
+            mChoice3.setClickable(false);
+            mChoice4.setClickable(false);
+            startPercentMockThread();
         }
     }
 
@@ -90,6 +106,42 @@ public class Questionnaire extends Activity implements View.OnClickListener {
                 loadQuestion();
                 break;
         }
+    }
+
+    private void initLoadingScreen() {
+        animatedCircleLoadingView.startDeterminate();
+    }
+
+    private void startPercentMockThread() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1500);
+                    for (int i = 0; i <= 100; i++) {
+                        Thread.sleep(20);
+                        changePercent(i);
+                    }
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(Questionnaire.this, MainActivity.class);
+                intent.putExtra("point", point);
+                startActivity(intent);
+                finish();
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    private void changePercent(final int percent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                animatedCircleLoadingView.setPercent(percent);
+            }
+        });
     }
 
 }

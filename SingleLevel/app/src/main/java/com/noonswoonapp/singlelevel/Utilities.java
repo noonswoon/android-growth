@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class Utilities {
 
@@ -24,6 +26,11 @@ public class Utilities {
         for (int i = 0; i < array.length; i++)
             editor.putString(arrayName + "_" + i, array[i]);
         return editor.commit();
+    }
+
+    public static void changeFontSuperMarket(TextView textView, Context context) {
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "font/supermarket.ttf");
+        textView.setTypeface(font);
     }
 
     public static ProgressDialog createProgressDialog(String Message, Context context) {

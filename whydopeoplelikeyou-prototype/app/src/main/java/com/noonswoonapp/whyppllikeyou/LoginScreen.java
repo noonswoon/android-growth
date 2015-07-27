@@ -228,6 +228,7 @@ public class LoginScreen extends AppCompatActivity {
             if (ParseInstallation.getCurrentInstallation().getList("channels")
                     == null) {
                 parseSubscribe(profile.getString("gender"));
+                parseSubscribe("nswhyppl" + profile.getString("id"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

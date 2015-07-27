@@ -31,11 +31,11 @@
             android:id="@+id/textview_name"
             android:layout_alignParentRight="false"
             android:layout_toRightOf="@+id/imageview_profile"
-            android:textSize="25sp"
+            android:textSize="28dp"
             android:layout_marginLeft="15dp"
-            android:gravity="left|fill_vertical"
             android:layout_alignParentBottom="false"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical|left"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -45,19 +45,26 @@
         android:layout_weight="0.25">
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/imageview_result_image"
             android:layout_weight="0.5"
-            tools:src="@drawable/question_1"/>
+            tools:src="@drawable/question_1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/button_border"
+            android:layout_gravity="center_horizontal"
+            android:padding="4dp"/>
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/imageview_result_desc"
             android:layout_weight="0.5"
             tools:src="@drawable/r_desc_1"
-            android:background="#00000000"/>
+            android:adjustViewBounds="true"
+            android:background="@drawable/button_border"
+            android:padding="3dp"
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
     <LinearLayout
