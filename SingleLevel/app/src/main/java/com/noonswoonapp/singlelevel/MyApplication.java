@@ -2,9 +2,12 @@ package com.noonswoonapp.singlelevel;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 
 import org.json.JSONObject;
+
+import io.fabric.sdk.android.Fabric;
 
 
 public class MyApplication extends Application {
@@ -16,6 +19,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, getString(R.string.parse_app_id), getString(R.string.parse_client_key));
 

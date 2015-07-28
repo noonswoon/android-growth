@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mNameTextView;
     private ShareButton mShareButton;
     private String mImageUrl;
+    private String mResultTextTH;
     private int point;
     private Button mRetry;
     private LinearLayout mResultLayout;
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void done(ParseObject parseObject, ParseException e) {
                         parseObject.put(ParseConstant.KEY_CLICKED_SHARE, true);
+                        parseObject.saveInBackground();
                     }
                 });
                 MyApplication.tracker().send(new HitBuilders.EventBuilder().setCategory("Button")
@@ -215,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                                                 Log.v(TAG, "Update : Success");
                                                 mShareLinkContent = new ShareLinkContent.Builder()
                                                         .setContentDescription("คลิกที่นี่ เพื่อลองค้นหาเหตุผลที่ทำไมคนถึงชอบคุณดูสิ")
-                                                        .setContentTitle("เหตุผลที่ทำไมคนถึงชอบคุณ")
+                                                        .setContentTitle("เหตุผลที่ทำไมคนถึงชอบคุณ - " + mResultTextTH)
                                                         .setImageUrl(Uri.parse(mImageUrl))
                                                         .setContentUrl(Uri.parse("http://bit.ly/whyppllike"))
                                                         .build();
@@ -373,8 +375,8 @@ public class MainActivity extends AppCompatActivity {
         int resID = getResources().getIdentifier(drawableName, "drawable", getPackageName());
 
         Log.i("Result :", shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
-
-        mResultTextViewTH.setText(shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI));
+        mResultTextTH = shared.getString(category + "_" + LANG_THAI, "null_" + LANG_THAI);
+        mResultTextViewTH.setText(mResultTextTH);
         mResultImage.setImageResource(resID);
         mNameTextView.setText(mNameTextView.getText() + "\nสมญานาม : " + shared.getString(category + "_" + ALIAS, "null_" + ALIAS));
 

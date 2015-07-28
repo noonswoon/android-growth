@@ -159,9 +159,11 @@ public class LoginScreen extends Activity {
             mUser.put(ParseConstant.KEY_EMAIL, profile.getString("email"));
             mUser.put(ParseConstant.KEY_BIRTH_DATE, profile.getString("birthday"));
             mUser.put(ParseConstant.KEY_ID, profile.getString("id"));
+            mUser.put(ParseConstant.KEY_GENDER, profile.getString("gender"));
             if (ParseInstallation.getCurrentInstallation().getList("channels")
                     == null) {
                 parseSubscribe(profile.getString("gender"));
+                parseSubscribe("nssinglelv" + profile.getString("id"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
     private static final String RESULT_IMAGE_F = "_2";
     private static final String RESULT_SHARE_M = "_3";
     private static final String RESULT_SHARE_F = "_4";
+    private static final int SHARE_IMAGE_HEADER_MARGIN_LEFT = 130;
     private int point;
     private String mImageUrl;
     private ImageView mResultImage;
@@ -111,10 +112,10 @@ public class MainActivity extends Activity {
                 int resID = getResources().getIdentifier(shared.getString("A" + String.valueOf(result) + checkShareGender(), null), "drawable", getPackageName());
                 Drawable d = ContextCompat.getDrawable(MainActivity.this, resID);
                 final Bitmap bitmap1 = ((BitmapDrawable) d).getBitmap();
-                mProfileLayout.getLayoutParams().width = bitmap1.getWidth();
+                mProfileLayout.getLayoutParams().width = bitmap1.getWidth() - SHARE_IMAGE_HEADER_MARGIN_LEFT;
                 mProfileLayout.requestLayout();
                 final float default_size = mProfileName.getTextSize() / 2;
-                mProfileName.setTextSize(20);
+                mProfileName.setTextSize(25);
                 mProfileName.requestLayout();
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
@@ -162,6 +163,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void done(ParseObject parseObject, ParseException e) {
                         parseObject.put(ParseConstant.KEY_CLICKED_SHARE, true);
+                        parseObject.saveInBackground();
                     }
                 });
                 mProgressDialog = Utilities.createProgressDialog("Sharing Image...", MainActivity.this);
@@ -239,8 +241,8 @@ public class MainActivity extends Activity {
         Canvas comboImage = new Canvas(csn);
 
         comboImage.drawBitmap(c, 0f, 0f, null);
-        comboImage.drawBitmap(s_resize, 130f, 10f, null);
-        comboImage.drawBitmap(n, s_resize.getWidth() + 145f, 25f, null);
+        comboImage.drawBitmap(s_resize, SHARE_IMAGE_HEADER_MARGIN_LEFT, 10f, null);
+        comboImage.drawBitmap(n, s_resize.getWidth() + SHARE_IMAGE_HEADER_MARGIN_LEFT + 15f, 10f, null);
 
         return csn;
     }

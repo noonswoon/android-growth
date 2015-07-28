@@ -8,6 +8,7 @@ public final class ParseConstant {
     public static final String KEY_LAST_NAME = "last_name";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_BIRTH_DATE = "birthday";
+    public static final String KEY_GENDER = "gender";
     public static final String KEY_IMAGE_FILE = "imageFile";
     public static final String KEY_CLICKED_SHARE = "clickedShare";
     public static final String KEY_CLICKED_ADS = "clickedAds";

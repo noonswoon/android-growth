@@ -44,7 +44,7 @@ dependencies {
     compile 'com.parse.bolts:bolts-android:1.2.0'
     compile fileTree(dir: 'libs', include: 'Parse-*.jar')
     compile project (':library')
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
         transitive = true;
     }
 }

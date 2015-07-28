@@ -89,6 +89,9 @@
                 <action android:name="com.parse.push.intent.OPEN"/>
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d3e7ad9a40d59fbd5b1dbd35f737c28b6ea51582" />
     </application>
 
 </manifest>

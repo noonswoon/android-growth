@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">โสดแค่ไหน</string>
     <string name="facebook_app_id">495438547278664</string>
-    <string name="parse_app_id">P8e35p55tPX8GyU5dEb3trHVwCRnaujVipX3tImV</string>
-    <string name="parse_client_key">sXGT77ZMWiNaWOcdLqzy9WCEORQSLCMfHlyNeYpa</string>
+    <string name="parse_app_id">eAlyxddM6FKtbGSJxDaDHqVUCEVP4bLl7EXpPv94</string>
+    <string name="parse_client_key">MfDWEZA8bauOTO2AupXbvJVXMJAAhxvdCbypQtj9</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
