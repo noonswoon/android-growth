@@ -15,3 +15,15 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontskipnonpubliclibraryclasses
+-keep class com.squareup.okhttp.**
+-dontwarn com.squareup.okhttp.**
+-keep class okio.**
+-dontwarn okio.**
+-assumenosideeffects class android.util.Log {
+    public static *** v(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** d(...);
+    public static *** e(...);
+}

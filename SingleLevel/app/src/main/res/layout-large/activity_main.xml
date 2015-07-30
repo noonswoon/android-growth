@@ -1,0 +1,104 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+              tools:context=".MainActivity"
+              android:orientation="vertical"
+              android:background="@drawable/bg_default"
+              android:id="@+id/linearlayout_main">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7"
+        android:id="@+id/relativelayout_profile"
+        android:layout_margin="8dp"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/imageview_profile"
+            android:layout_alignParentLeft="true"
+            tools:src="@drawable/profile_default"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Anonymous Monous"
+            android:id="@+id/textview_name"
+            android:layout_alignParentRight="false"
+            android:layout_toRightOf="@+id/imageview_profile"
+            android:textSize="40dp"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentBottom="false"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical|left"
+            android:textIsSelectable="false"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/imageview_result_image"
+            android:layout_weight="0.5"
+            tools:src="@drawable/question_1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/button_border"
+            android:layout_gravity="center_horizontal"
+            android:padding="4dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/imageview_result_desc"
+            android:layout_weight="0.5"
+            tools:src="@drawable/r_desc_1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/button_border"
+            android:padding="3dp"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:layout_margin="5dp">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="เริ่มใหม่"
+            android:id="@+id/button_retry"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:textSize="35dp"
+            android:background="@drawable/button_c_default"/>
+
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.facebook.share.widget.ShareButton"
+            android:id="@+id/button_share"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:text="Share"
+            android:textSize="35dp"
+            android:enabled="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>

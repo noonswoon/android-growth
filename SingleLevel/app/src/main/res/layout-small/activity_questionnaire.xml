@@ -1,0 +1,123 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.noonswoonapp.singlequiz.Questionnaire"
+              android:background="@drawable/bg_default">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:background="#ffffffff"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="32dp">
+
+        <ImageView
+            android:id="@+id/imageview_questionnaire"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo"
+            android:layout_weight="1"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/textview_question"
+            android:background="#ffffffff"
+            android:textColor="#ff000000"
+            android:gravity="center"
+            android:textSize="10dp"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:layout_margin="10dp"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="New Button"
+                    android:id="@+id/button_choice1"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_border"
+                    android:textSize="5sp"
+                    android:padding="8dp"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="New Button"
+                    android:id="@+id/button_choice2"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_border"
+                    android:textSize="5sp"
+                    android:padding="8dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="New Button"
+                    android:id="@+id/button_choice3"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_border"
+                    android:textSize="5sp"
+                    android:padding="8dp"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="New Button"
+                    android:id="@+id/button_choice4"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_border"
+                    android:textSize="5sp"
+                    android:padding="8dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#e6000000"
+        android:visibility="invisible"
+        android:id="@+id/framelayout_loading">
+
+        <com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/circle_loading_view"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            app:mainColor="#FFF5B857"
+            app:secondaryColor="#FFF5B857"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+</RelativeLayout>

@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">โสดแค่ไหน</string>
-    <string name="facebook_app_id">495438547278664</string>
+
+    <string name="google_analytic_tracker">UA-55382366-6</string>
+    <string name="facebook_app_id">878507835574768</string>
     <string name="parse_app_id">eAlyxddM6FKtbGSJxDaDHqVUCEVP4bLl7EXpPv94</string>
     <string name="parse_client_key">MfDWEZA8bauOTO2AupXbvJVXMJAAhxvdCbypQtj9</string>
+    <string name="adbuddiz_publisherkey">a252e070-a66b-4be0-b410-584189cfdaaf</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="cognito_pool_id">us-east-1:a67510e9-b42a-42b3-84c7-4ce30eaabb7a</string>
+    <string name="aws_s3_bucket_name">singlelevel</string>
+
     <string name="title_activity_login_screen">LoginScreen</string>
     <string name="title_activity_splash_screen">โสดแค่ไหน</string>
     <string name="title_activity_questionnaire">Questionnaire</string>
